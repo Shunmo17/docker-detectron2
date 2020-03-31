@@ -68,5 +68,5 @@ nvidia-docker run \
     --volume ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh \
     --volume ${PWD}/common_files/include/ros_entrypoint.sh:/ros_entrypoint.sh \
     --volume ${PWD}/common_files/include/catkin_build.bash:/catkin_build.bash \
-    --volume ${PWD}/../../ros_packages/printeps_environment/mask_rcnn_ros:/catkin_ws/src/mask_rcnn_ros \
-    ${IMAGE_NAME}:ros-${ROS}_gpu-${GPU}_cuda-${CUDA}
+    --volume ${PWD}/../../ros_packages/detectron2_ros:/catkin_ws/src/detectron2 \
+    ${IMAGE_NAME}:latest
