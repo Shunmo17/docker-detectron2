@@ -3,7 +3,7 @@
 ##############################################################################
 # https://gitlab.com/nvidia/cuda/blob/master/dist/ubuntu16.04/10.1/devel/cudnn7/Dockerfile
 
-FROM nvidia/cuda:10.0-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-devel-ubuntu18.04
 
 ENV CUDNN_VERSION 7.4.2.24
 
@@ -18,47 +18,41 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 ##############################################################################
-##                     ROS Kinetic-Desktop-Full Install                     ##
+##                                  Detectron                               ##
 ##############################################################################
-# setup keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-
-# setup sources.list
-RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros1-latest.list
-
-# install ros
-ENV ROS_DISTRO kinetic
+# ref https://github.com/DavidFernandezChaves/Detectron2_ros
+# Python v3.7 (in virtual environment)
 RUN apt-get update && apt-get install -y \
-    ros-kinetic-desktop-full \
-    && rm -rf /var/lib/apt/lists/*
-    
-# initiliaze rosdep
-RUN rosdep init && rosdep update
-RUN rosdep fix-permissions
+    python3.7 \
+    python3-virtualenv
+RUN apt-get update && apt-get install -y python-pip
+RUN pip install --upgrade pip
+RUN pip install virtualenv
+RUN mkdir ~/.virtualenvs
+RUN pip install virtualenvwrapper
+RUN export WORKON_HOME=~/.virtualenvs
+RUN echo '. /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc 
 
-# set entrypoint
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
+# create virtual environment
+## ref : https://github.com/NeuralEnsemble/pype9/blob/master/Dockerfile
+# RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; mkvirtualenv --python=python3 detectron2_ros"
+RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; python3.7 -m virtualenv --python=/usr/bin/python3 /opt/venv"
+RUN echo "============== Python version =============="
+RUN python3 --version
+RUN echo "============================================"
+# install git
+RUN apt-get update && apt-get install -y git
 
-##############################################################################
-##                              ROS Initialize                              ##
-##############################################################################
-RUN mkdir -p /catkin_ws/src
+# install dependencies
+RUN /opt/venv/bin/pip install -U torch==1.4+cu100 torchvision==0.5+cu100 -f https://download.pytorch.org/whl/torch_stable.html
+RUN /opt/venv/bin/pip install --ignore-installed cython pyyaml==5.1
+RUN /opt/venv/bin/pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
-# for catkin build
-RUN apt-get update && apt-get install -y \
-    python-catkin-tools
+RUN python --version
 
-# for solving build error
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /catkin_ws
-RUN	/bin/bash -c "source /opt/ros/kinetic/setup.bash; catkin init"
-
-RUN echo "source /ros_setting.sh" >> ~/.bashrc && \
-    echo "source /catkin_build.bash" >> ~/.bashrc
+RUN /opt/venv/bin/pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu100/index.html
+RUN /opt/venv/bin/pip install opencv-python
+RUN /opt/venv/bin/pip install rospkg
 
 ##############################################################################
 ##                                  Common                                  ##
@@ -86,45 +80,6 @@ RUN apt-get update && apt-get install -y \
 
 # aiias
 RUN echo "source /alias.sh">> ~/.bashrc
-
-##############################################################################
-##                                  Detectron                               ##
-##############################################################################
-# ref https://github.com/DavidFernandezChaves/Detectron2_ros
-# Python v3.6 (in virtual environment)
-RUN apt-get update && apt-get install -y \
-    software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.6 \
-    python3-virtualenv
-RUN apt-get update && apt-get install -y python-pip
-
-# RUN pip install --upgrade pip
-RUN pip install virtualenv
-RUN mkdir ~/.virtualenvs
-RUN pip install virtualenvwrapper
-RUN export WORKON_HOME=~/.virtualenvs
-RUN echo '. /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc 
-
-# create virtual environment
-## ref : https://github.com/NeuralEnsemble/pype9/blob/master/Dockerfile
-# RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; mkvirtualenv --python=python3 detectron2_ros"
-RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; python3 -m virtualenv --python=/usr/bin/python3 /opt/venv"
-
-# install git
-RUN apt-get update && apt-get install -y git
-
-# install dependencies
-RUN /opt/venv/bin/pip install -U torch==1.4+cu100 torchvision==0.5+cu100 -f https://download.pytorch.org/whl/torch_stable.html
-RUN /opt/venv/bin/pip install --ignore-installed cython pyyaml==5.1
-RUN /opt/venv/bin/pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
-
-RUN python --version
-
-RUN /opt/venv/bin/pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu100/index.html
-RUN /opt/venv/bin/pip install opencv-python
-RUN /opt/venv/bin/pip install rospkg
 
 ##############################################################################
 ##                              bashrc setting                              ##
