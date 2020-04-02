@@ -11,4 +11,4 @@ if [ $CAM_NUMBER = "unspecified" ]; then
         echo "Test Mode was specifed."
     fi
 fi
-roslaunch detectron2_ros detectron2_ros.launch camera_index:= $CAM_NUMBER
+roslaunch detectron2_ros detectron2_ros.launch camera_index:=$CAM_NUMBER
