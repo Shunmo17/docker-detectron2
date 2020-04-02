@@ -41,6 +41,15 @@ FROM ${BASE_IMAGE}
 # RUN /opt/venv/bin/pip install opencv-python
 # RUN /opt/venv/bin/pip install rospkg
 
+# download models 
+RUN mkdir /MODEL_ZOO
+WORKDIR /MODEL_ZOO
+RUN wget -O mask_rcnn_X_101_32x8d_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x/139653917/model_final_2d9806.pkl && \
+    wget -O mask_rcnn_R_101_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x/138205316/model_final_a3ec72.pkl && \
+    wget -O mask_rcnn_R_101_DC5_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_DC5_3x/138363294/model_final_0464b7.pkl && \
+    wget -O mask_rcnn_R_101_C4_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_C4_3x/138363239/model_final_a2914c.pkl && \
+    wget -O mask_rcnn_R_50_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
+
 ##############################################################################
 ##                              bashrc setting                              ##
 ##############################################################################

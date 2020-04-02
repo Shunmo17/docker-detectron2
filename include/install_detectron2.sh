@@ -17,4 +17,6 @@ pip install cython pyyaml==5.1 && \
 pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI' && \
 pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu100/index.html && \
 pip install opencv-python && \
-pip install rospkg
+pip install rospkg && \
+echo "workon detectron2_ros" >> ~/.bashrc && \
+echo "source /startup.sh" >> ~/.bashrc
