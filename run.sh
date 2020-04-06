@@ -66,13 +66,35 @@ echo "| GPU Number : ${GPU_NUMBER} |"
 echo "| Camera Number : ${CAM_NUMBER} |"
 echo "===================="
 
+# xhost +local:user
+# NV_GPU=${GPU_NUMBER} \
+# nvidia-docker run \
+#     -it --rm \
+#     --runtime=nvidia \
+#     --net host \
+#     --privileged \
+#     --env DISPLAY=${DISPLAY} \
+#     --env CAM_NUMBER=${CAM_NUMBER} \
+#     --env TEST_ENABLE=${TEST_ENABLE} \
+#     --volume /tmp/.X11-unix:/tmp/.X11-unix \
+#     --volume /etc/localtime:/etc/localtime:ro \
+#     --volume ${HOME}/.Xauthority:/root/.Xauthority \
+#     --volume ${PWD}/common_files/include/alias.sh:/alias.sh \
+#     --volume ${PWD}/common_files/include/config:/root/.config/terminator/config \
+#     --volume ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh \
+#     --volume ${PWD}/common_files/include/ros_entrypoint.sh:/ros_entrypoint.sh \
+#     --volume ${PWD}/common_files/include/catkin_build.bash:/catkin_build.bash \
+#     --volume ${PWD}/../../ros_packages/printeps_environment/detectron2_ros:/catkin_ws/src/printeps_environment/detectron2 \
+#     --volume ${PWD}/include/startup.sh:/startup.sh \
+#     ${IMAGE_NAME}:latest
+
 xhost +local:user
-NV_GPU=${GPU_NUMBER} \
-nvidia-docker run \
+docker run \
     -it --rm \
     --runtime=nvidia \
     --net host \
     --privileged \
+    --gpus device=${GPU_NUMBER} \
     --env DISPLAY=${DISPLAY} \
     --env CAM_NUMBER=${CAM_NUMBER} \
     --env TEST_ENABLE=${TEST_ENABLE} \
