@@ -170,7 +170,7 @@ def get_session():
             # config.gpu_options.allow_growth = True
             config = tf.ConfigProto(
                 gpu_options = tf.GPUOptions(
-                per_process_gpu_memory_fraction = 0.4, # <= 80%
+                per_process_gpu_memory_fraction = 0.2, # <= 80%
                 allow_growth = True
                 )
             )
