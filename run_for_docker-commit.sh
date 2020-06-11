@@ -8,7 +8,6 @@ docker run \
     -it --rm \
     --net host \
     --privileged \
-    --runtime=nvidia \
     --env DISPLAY=${DISPLAY} \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
     --volume /etc/localtime:/etc/localtime:ro \
