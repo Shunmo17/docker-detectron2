@@ -54,16 +54,41 @@ while true; do
   esac
 done
 
+if [ ${ROS_DISTRO} = "kinetic" ]; then UBUNTU="16"; fi
+if [ ${ROS_DISTRO} = "melodic" ]; then UBUNTU="18"; fi
+if [ ${GPU} = "off" ]; then CUDA="off"; fi
+
 if [ ${UPDATE} = "true" ]; then
   echo "[SKIP] building ubuntu base image and building ros base image"
 fi
 if [ ${UPDATE} = "false" ]; then
   # build ubuntu base image
-  DOCKERFILE="${PWD}/common_files/Dockerfiles/ubuntu${UBUNTU}_gpu-${GPU}_cuda-${CUDA}/Dockerfile"
-  docker build \
+  DOCKERFILE="${PWD}/common_files/Dockerfiles/ubuntu/Dockerfile"
+  if [ ${CUDA} = "off" ]; then
+    docker build \
       --rm \
-      --tag shunmo_base_image:ubuntu${UBUNTU}_gpu-${GPU}_cuda-${CUDA} \
+      --tag shunmo_base_image:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA} \
+      --build-arg BASE_IMAGE="ubuntu:${UBUNTU}.04" \
+      --build-arg UBUNTU=${UBUNTU} \
       --file ${DOCKERFILE} .
+  else
+    docker build \
+      --rm \
+      --tag shunmo_base_image:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA} \
+      --build-arg BASE_IMAGE="nvidia/cuda:10.0-devel-ubuntu${UBUNTU}.04" \
+      --build-arg UBUNTU=${UBUNTU} \
+      --file ${DOCKERFILE} .
+  fi
+
+  # for using nvidia gpu
+  DOCKERFILE="${PWD}/common_files/Dockerfiles/nvidia-gpu/Dockerfile"
+  if [ ${GPU} = "on" ]; then
+    docker build \
+      --rm \
+      --tag shunmo_base_image:ubuntu${UBUNTU}_gpu-on_cuda-${CUDA} \
+      --build-arg BASE_IMAGE="shunmo_base_image:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA}" \
+      --file ${DOCKERFILE} .
+  fi
 
   # build ros base image
   DOCKERFILE="${PWD}/common_files/Dockerfiles/ros1/Dockerfile"
@@ -77,11 +102,12 @@ fi
 
 # build unique image
 docker build \
-    --rm \
-    --no-cache=${CACHE} \
-    --tag ${IMAGE_NAME}:base \
-    --build-arg BASE_IMAGE="shunmo_base_image:ros1-${ROS_DISTRO}_gpu-${GPU}_cuda-${CUDA}" \
-    --file Dockerfile .
+  --rm \
+  --no-cache=${CACHE} \
+  --tag ${IMAGE_NAME}:base \
+  --build-arg BASE_IMAGE="shunmo_base_image:ros1-${ROS_DISTRO}_gpu-${GPU}_cuda-${CUDA}" \
+  --build-arg ROS_DISTRO=${ROS_DISTRO} \
+  --file Dockerfile .
 
 echo "================================"
 echo "UBUNTU version : Ubuntu${UBUNTU}.04"
