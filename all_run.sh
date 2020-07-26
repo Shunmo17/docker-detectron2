@@ -12,6 +12,13 @@ if [ ${HOSTNAME} = "shun-mainpc" ]; then
     echo "==============================="
     docker-compose -f ./docker-compose/docker-compose_shun-mainpc.yml up
 fi
+# if [ ${HOSTNAME} = "shun-mainpc" ]; then
+#     echo "==============================="
+#     echo "|  GPU   | 0 | 0 | 1 | 1 | 1 |"
+#     echo "| Camera | 0 | 1 | 2 | 3 | 4 |"
+#     echo "==============================="
+#     docker-compose -f ./docker-compose/docker-compose_shun-mainpc_x6.yml up
+# fi
 
 # @07-304
 if [ ${HOSTNAME} = "ytpc2020a" ]; then
