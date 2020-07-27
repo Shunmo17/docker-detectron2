@@ -33,5 +33,5 @@ if [ ${HOSTNAME} = "dlbox" ]; then
     echo "|  GPU   | 0 | 0 | 1 | 1 | 2  | 2  |"
     echo "| Camera | 6 | 7 | 8 | 9 | 10 | 11 |"
     echo "===================================="
-    docker-compose -f ./docker-compose/docker-compose_dlbox.yml up
+    sudo docker-compose -f ./docker-compose/docker-compose_dlbox.yml up
 fi
