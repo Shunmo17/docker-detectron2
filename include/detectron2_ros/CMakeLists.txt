@@ -8,11 +8,11 @@ project(detectron2_ros)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  rospy std_msgs sensor_msgs detectron2_ros_msgs
+  rospy std_msgs sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(catkin REQUIRED COMPONENTS std_msgs sensor_msgs message_generation)
+find_package(catkin REQUIRED COMPONENTS std_msgs sensor_msgs)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -46,7 +46,7 @@ catkin_python_setup()
 
 # add_message_files(
 #   FILES
-#   Result.msg
+#     Result.msg
 # )
 
 

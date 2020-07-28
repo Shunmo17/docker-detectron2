@@ -1,6 +1,7 @@
 #! /bin/bash
 
 # instead of "source ~/.bashrc"
+source /ros_entrypoint.sh
 source /alias.sh
 source /ros_setting.sh
 source /catkin_build.bash

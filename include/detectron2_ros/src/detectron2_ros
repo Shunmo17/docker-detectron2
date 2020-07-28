@@ -13,7 +13,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
 from detectron2.utils.visualizer import Visualizer
-from detectron2_ros_msgs.msg import Result
+from detectron2_ros.msg import Result
 from sensor_msgs.msg import Image, RegionOfInterest
 from sensor_msgs.msg import PointCloud2
 
