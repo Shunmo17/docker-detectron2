@@ -8,7 +8,7 @@ project(detectron2_ros)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  rospy std_msgs sensor_msgs message_generation detectron2_ros_msgs
+  rospy std_msgs sensor_msgs detectron2_ros_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,9 +50,9 @@ catkin_python_setup()
 # )
 
 
-generate_messages(
-  DEPENDENCIES std_msgs sensor_msgs
-)
+# generate_messages(
+#   DEPENDENCIES std_msgs sensor_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
