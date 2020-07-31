@@ -33,7 +33,7 @@ class Detectron2node(object):
         # Topic name
         # self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
         # self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
-        self.input_image = "/env_cam" + _cam_index + "/rgb/image"
+        self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
         self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
