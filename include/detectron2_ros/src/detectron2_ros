@@ -31,10 +31,7 @@ class Detectron2node(object):
         self._publish_rate = rospy.get_param('~publish_rate', 100)
 
         # Topic name
-        # self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
-        # self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
-        self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
 
@@ -47,12 +44,11 @@ class Detectron2node(object):
         self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
         self._visualization = rospy.get_param('~visualization', True)
 
-        # Publisher
-        self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
-
         # Subscriber
         self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
-        # self._pcd_sub = rospy.Subscriber(self.input_pcd, PointCloud2, self._pcd_callback, queue_size=1)
+
+        # Publisher
+        self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
 
         if self._visualization:
             self._vis_pub = rospy.Publisher(self.output_visualization_topic, Image, queue_size=1)
@@ -75,10 +71,6 @@ class Detectron2node(object):
                 outputs = self.predictor(np_image)
                 result = outputs["instances"].to("cpu")
                 result_msg = self.getResult(result)
-
-                # add original pcd topic to result msg
-                # if self._pcd_tmp is not None:
-                #     result_msg.pcd = self._pcd_tmp
 
                 # publish result msg
                 self._result_pub.publish(result_msg)
