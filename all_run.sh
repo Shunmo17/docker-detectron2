@@ -6,10 +6,10 @@ echo "===================================="
 
 # @home
 if [ ${HOSTNAME} = "shun-mainpc" ]; then
-    echo "==============================="
-    echo "|  GPU   | 0 | 0 | 1 | 1 | 1 |"
-    echo "| Camera | 0 | 1 | 6 | 8 | 9 |"
-    echo "==============================="
+    echo "==================================="
+    echo "|  GPU   | 1 | 1 | 1 | 1 | 1  | 1  |"
+    echo "| Camera | 2 | 3 | 6 | 7 | 10 | 11 |"
+    echo "==================================="
     docker-compose -f ./docker-compose/shun-mainpc/docker-compose.yml up
 fi
 # if [ ${HOSTNAME} = "shun-mainpc" ]; then

@@ -14,6 +14,3 @@ float32[] scores
 
 # Instance masks as Image
 sensor_msgs/Image[] masks
-
-# Original PCD
-sensor_msgs/PointCloud2 pcd

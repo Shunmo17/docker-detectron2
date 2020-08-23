@@ -5,10 +5,10 @@ services:
         network_mode: host
         runtime: nvidia
         environment:
-            NVIDIA_VISIBLE_DEVICES: 0
+            NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 0
+            CAM_NUMBER: 2
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -30,10 +30,10 @@ services:
         network_mode: host
         runtime: nvidia
         environment:
-            NVIDIA_VISIBLE_DEVICES: 0
+            NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 1
+            CAM_NUMBER: 3
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -50,7 +50,7 @@ services:
         image: detectron2:latest
         command: /startup_for_docker.sh
 
-    detectron2_env_cam06:
+    detectron2_env_cam05:
         stdin_open: "true"
         network_mode: host
         runtime: nvidia
@@ -75,6 +75,31 @@ services:
         image: detectron2:latest
         command: /startup_for_docker.sh
 
+    detectron2_env_cam06:
+        stdin_open: "true"
+        network_mode: host
+        runtime: nvidia
+        environment:
+            NVIDIA_VISIBLE_DEVICES: 1
+            NVIDIA_DRIVER_CAPABILITIES: all
+            DISPLAY: ${DISPLAY}
+            CAM_NUMBER: 7
+            TEST_ENABLE: "false"
+        volumes:
+            - /tmp/.X11-unix:/tmp/.X11-unix
+            - /etc/localtime:/etc/localtime:ro
+            - ${HOME}/.Xauthority:/root/.Xauthority
+            - ${PWD}/common_files/include/alias.sh:/alias.sh
+            - ${PWD}/common_files/include/config:/root/.config/terminator/config
+            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/include/ros_entrypoint.sh:/ros_entrypoint.sh
+            - ${PWD}/common_files/include/catkin_build.bash:/catkin_build.bash
+            - ${PWD}/../../ros_packages/printeps_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+            - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+            - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+        image: detectron2:latest
+        command: /startup_for_docker.sh
+
     detectron2_env_cam08:
         stdin_open: "true"
         network_mode: host
@@ -83,7 +108,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 8
+            CAM_NUMBER: 10
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -108,7 +133,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 9
+            CAM_NUMBER: 11
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix

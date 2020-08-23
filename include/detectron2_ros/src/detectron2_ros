@@ -31,10 +31,7 @@ class Detectron2node(object):
         self._publish_rate = rospy.get_param('~publish_rate', 100)
 
         # Topic name
-        # self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
-        # self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
-        self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
 
@@ -47,12 +44,11 @@ class Detectron2node(object):
         self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
         self._visualization = rospy.get_param('~visualization', True)
 
-        # Publisher
-        self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
-
         # Subscriber
         self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
-        # self._pcd_sub = rospy.Subscriber(self.input_pcd, PointCloud2, self._pcd_callback, queue_size=1)
+
+        # Publisher
+        self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
 
         if self._visualization:
             self._vis_pub = rospy.Publisher(self.output_visualization_topic, Image, queue_size=1)
@@ -75,10 +71,6 @@ class Detectron2node(object):
                 outputs = self.predictor(np_image)
                 result = outputs["instances"].to("cpu")
                 result_msg = self.getResult(result)
-
-                # add original pcd topic to result msg
-                # if self._pcd_tmp is not None:
-                #     result_msg.pcd = self._pcd_tmp
 
                 # publish result msg
                 self._result_pub.publish(result_msg)
@@ -174,23 +166,23 @@ def main(argv):
     node = Detectron2node("{:0=2}".format(cam_index))
 
     print("===== Mask R-CNN with Detectron2 ======================")
-    print("Parameter")
-    print("    cam_index : {}".format(cam_index))
-    print("    model : {}".format(rospy.get_param('~model')))
-    print("    detection_threshold : {}".format(node.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST))
-    print("    weight : {}".format(node.cfg.MODEL.WEIGHTS))
-    print("    thing_classes : {}".format("OMITTED"))
-    # print("    thing_classes : {}".format(node._class_names))
-    print("    visualization : {}".format(node._visualization))
-    print("    publish_rate : {}".format(node._publish_rate))
-    print("Subscribe")
-    print("    sensor_msgs/Image : {}".format(node.input_image))
-    print("    sensor_msgs/PointCloud2 : {}".format(node.input_pcd))
-    print("Publish")
-    print("    detectron2_ros/Result : {}".format(node.output_result_topic))
-    if node._visualization:
-        print("    sensor_msgs/Image : {}".format(node.output_visualization_topic))
-    print("=============================================")
+    # print("Parameter")
+    # print("    cam_index : {}".format(cam_index))
+    # print("    model : {}".format(rospy.get_param('~model')))
+    # print("    detection_threshold : {}".format(node.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST))
+    # print("    weight : {}".format(node.cfg.MODEL.WEIGHTS))
+    # print("    thing_classes : {}".format("OMITTED"))
+    # # print("    thing_classes : {}".format(node._class_names))
+    # print("    visualization : {}".format(node._visualization))
+    # print("    publish_rate : {}".format(node._publish_rate))
+    # print("Subscribe")
+    # print("    sensor_msgs/Image : {}".format(node.input_image))
+    # print("    sensor_msgs/PointCloud2 : {}".format(node.input_pcd))
+    # print("Publish")
+    # print("    detectron2_ros/Result : {}".format(node.output_result_topic))
+    # if node._visualization:
+    #     print("    sensor_msgs/Image : {}".format(node.output_visualization_topic))
+    # print("=============================================")
     node.run()
 
 
