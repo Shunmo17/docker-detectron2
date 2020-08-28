@@ -6,6 +6,8 @@ IMAGE_NAME="detectron2"
 GPU_NUMBER="0"
 CAM_NUMBER="unspecified"
 TEST_ENABLE="false"
+# HSR, MANUAL, or PC
+ROS_MASTER_MODE="PC"
 
 # Usage
 function usage() {
@@ -72,6 +74,8 @@ docker run \
     --net host \
     --gpus device=${GPU_NUMBER} \
     --env DISPLAY=${DISPLAY} \
+    --env QT_X11_NO_MITSHM=1 \
+    --env ROS_MASTER_MODE=${ROS_MASTER_MODE} \
     --env CAM_NUMBER=${CAM_NUMBER} \
     --env TEST_ENABLE=${TEST_ENABLE} \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \

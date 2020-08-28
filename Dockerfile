@@ -54,4 +54,4 @@ RUN wget -O mask_rcnn_X_101_32x8d_FPN_3x.pkl https://dl.fbaipublicfiles.com/dete
 ##                              bashrc setting                              ##
 ##############################################################################
 # terminal text
-RUN echo "export PS1='\[\e[1;31;40m\]DETECTRON2\[\e[0m\] \u:\w\$ '">> ~/.bashrc
+RUN echo "export PS1='\[\e[1;31;47m\]DETECTRON2\[\e[0m\] \[\e[1;37;46m\]\${ROS_MASTER_MODE}\[\e[0m\] \u:\w\$ '">> ~/.bashrc
