@@ -2,6 +2,7 @@
   <!-- common arguments -->
   <arg name="cam_index" />
   <arg name="detection_threshold" default="0.2" />
+  <arg name="generate_image_from_pcd" default="true" />
 
   <!-- mask_rcnn_X_101_32x8d_FPN_3x mask_rcnn_R_101_FPN_3x mask_rcnn_R_101_DC5_3x mask_rcnn_R_101_C4_3x mask_rcnn_R_50_FPN_3x-->
 
@@ -27,11 +28,12 @@
   <arg name="publish_rate"        default="100" />
 
   <node pkg="detectron2_ros" type="detectron2_ros" name="detectron2_ros_$(arg cam_index)" ><!--  output="screen" -->
-    <param name="cam_index"           value="$(arg cam_index)" />
-    <param name="detection_threshold" value="$(arg detection_threshold)" />
-    <param name="model"               value="$(arg model)" />
-    <param name="weight"              value="$(arg weight)" />
-    <param name="visualization"       value="$(arg visualization)" />
-    <param name="publish_rate"        value="$(arg publish_rate)" />
+    <param name="cam_index"                       value="$(arg cam_index)" />
+    <param name="detection_threshold"             value="$(arg detection_threshold)" />
+    <param name="model"                           value="$(arg model)" />
+    <param name="weight"                          value="$(arg weight)" />
+    <param name="visualization"                   value="$(arg visualization)" />
+    <param name="publish_rate"                    value="$(arg publish_rate)" />
+    <param name="generate_image_from_pcd"         value="$(arg generate_image_from_pcd)" />
   </node>
 </launch>

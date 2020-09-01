@@ -2,10 +2,12 @@
 import sys
 import threading
 import copy
+import time
 
 import cv2 as cv
 import numpy as np
 import rospy
+import ros_numpy
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
 from cv_bridge import CvBridge, CvBridgeError
@@ -29,9 +31,11 @@ class Detectron2node(object):
         self._img_lock = threading.Lock()
         self._pcd_lock = threading.Lock()
         self._publish_rate = rospy.get_param('~publish_rate', 100)
+        self._gen_image_from_pcd = rospy.get_param("~generate_image_from_pcd")
 
         # Topic name
         self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
+        self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
 
@@ -45,7 +49,12 @@ class Detectron2node(object):
         self._visualization = rospy.get_param('~visualization', True)
 
         # Subscriber
-        self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
+        self._pcd_sub = None
+        self._image_sub = None
+        if self._gen_image_from_pcd:
+            self._pcd_sub = rospy.Subscriber(self.input_pcd, PointCloud2, self._pcd_callback, queue_size=1)
+        else:
+            self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
 
         # Publisher
         self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
@@ -53,17 +62,75 @@ class Detectron2node(object):
         if self._visualization:
             self._vis_pub = rospy.Publisher(self.output_visualization_topic, Image, queue_size=1)
 
+    def generate_image(self, pcd):
+        # start_time = time.time()
+
+        # pcd and image size
+        if pcd is not None:
+            width = pcd.width
+            height = pcd.height
+            if height == 1:
+                resolution = width
+                # NFOV Unbinned
+                if resolution == 368640:
+                    width = 640
+                    height = 576
+                # NFOV 2x2 Binned (SW)
+                elif resolution == 92160:
+                    width = 320
+                    height = 288
+                # WFOV 2x2 Binned
+                elif resolution == 262144:
+                    width = 512
+                    height = 512
+                # WFOV Unbinned
+                elif resolution == 1048576:
+                    width = 1024
+                    height = 1024
+                else:
+                    rospy.logerr("[Detectron2 ROS] Received Unknown Resolution PCD")
+                    rospy.logerr("    You can use generating image from pcd onyl when using Azure Kinect DK.")
+
+            # convert
+            array = np.zeros((height, width), dtype=np.float32)
+
+            # save data to arrary
+            pcd_original = ros_numpy.numpify(pcd)
+            pcd_original = pcd_original.reshape(height, width)
+            array[:, :] = pcd_original['rgb']
+
+            # convert color (html color -> rgb)
+            data = array.view(np.uint8).reshape(array.shape+(4,))[..., :3]
+            image = ros_numpy.msgify(Image, data, encoding='bgr8')
+            # finish_time = time.time()
+            # print("generate image time : {0}".format(finish_time-start_time))
+
+            return image
+        else:
+            return None
+
     def run(self):
 
         rate = rospy.Rate(self._publish_rate)
         while not rospy.is_shutdown():
-            if self._img_lock.acquire(False):
-                img_msg = self._last_img
-                self._last_img = None
-                self._img_lock.release()
+            img_msg = None
+            # if generate image from pcd indirectly
+            if self._gen_image_from_pcd:
+                if self._pcd_lock.acquire(False):
+                    pcd_msg = self._last_pcd
+                    img_msg = self.generate_image(pcd_msg)
+                    self._pcd_lock.release()
+                else:
+                    rate.sleep()
+                    continue
+            # if subscribe image directly
             else:
-                rate.sleep()
-                continue
+                if self._img_lock.acquire(False):
+                    img_msg = self._last_img
+                    self._img_lock.release()
+                else:
+                    rate.sleep()
+                    continue
 
             if img_msg is not None:
                 # add result of Mask R-CNN
@@ -96,7 +163,7 @@ class Detectron2node(object):
             return
 
         result_msg = Result()
-        result_msg.header = self._img_header
+        result_msg.header = self._msg_header
         result_msg.class_ids = predictions.pred_classes if predictions.has("pred_classes") else None
         result_msg.class_names = np.array(self._class_names)[result_msg.class_ids.numpy()]
         result_msg.scores = predictions.scores if predictions.has("scores") else None
@@ -148,16 +215,15 @@ class Detectron2node(object):
         rospy.loginfo("[detectron2_ros] Get an image")
         if self._img_lock.acquire(False):
             self._last_img = msg
-            # if self._last_pcd is not None:
-            #     self._pcd_tmp = copy.deepcopy(self._last_pcd)
-            self._img_header = msg.header
+            self._msg_header = msg.header
             self._img_lock.release()
 
-    # def _pcd_callback(self, msg):
-    #     rospy.loginfo("Get an PCD")
-    #     if self._pcd_lock.acquire(False):
-    #         self._last_pcd = msg
-    #         self._pcd_lock.release()
+    def _pcd_callback(self, msg):
+        rospy.loginfo("[detectron2_ros] Get an PCD")
+        if self._pcd_lock.acquire(False):
+            self._last_pcd = msg
+            self._msg_header = msg.header
+            self._pcd_lock.release()
 
 
 def main(argv):
