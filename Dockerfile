@@ -50,6 +50,10 @@ RUN wget -O mask_rcnn_X_101_32x8d_FPN_3x.pkl https://dl.fbaipublicfiles.com/dete
     wget -O mask_rcnn_R_101_C4_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_C4_3x/138363239/model_final_a2914c.pkl && \
     wget -O mask_rcnn_R_50_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
 
+# install ros_numpy
+RUN apt update && apt install -y \
+    ros-melodic-ros-numpy
+
 ##############################################################################
 ##                              bashrc setting                              ##
 ##############################################################################
