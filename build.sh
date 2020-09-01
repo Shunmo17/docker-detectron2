@@ -4,6 +4,7 @@
 IMAGE_NAME="detectron2"
 UBUNTU="18"
 ROS_DISTRO="melodic"
+CUDA_VERSION="10.0"
 GPU="on"
 CUDA="on"
 CACHE="false"
@@ -56,6 +57,7 @@ done
 
 if [ ${ROS_DISTRO} = "kinetic" ]; then UBUNTU="16"; fi
 if [ ${ROS_DISTRO} = "melodic" ]; then UBUNTU="18"; fi
+if [ ${ROS_DISTRO} = "noetic" ]; then UBUNTU="20"; fi
 if [ ${GPU} = "off" ]; then CUDA="off"; fi
 
 if [ ${UPDATE} = "true" ]; then
@@ -75,7 +77,7 @@ if [ ${UPDATE} = "false" ]; then
     docker build \
       --rm \
       --tag shunmo_base_image:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA} \
-      --build-arg BASE_IMAGE="nvidia/cuda:10.0-devel-ubuntu${UBUNTU}.04" \
+      --build-arg BASE_IMAGE="nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU}.04" \
       --build-arg UBUNTU=${UBUNTU} \
       --file ${DOCKERFILE} .
   fi
@@ -104,7 +106,7 @@ fi
 docker build \
   --rm \
   --no-cache=${CACHE} \
-  --tag ${IMAGE_NAME}:base \
+  --tag ${IMAGE_NAME}:ros1-${ROS_DISTRO}_gpu-${GPU}_cuda-${CUDA} \
   --build-arg BASE_IMAGE="shunmo_base_image:ros1-${ROS_DISTRO}_gpu-${GPU}_cuda-${CUDA}" \
   --build-arg ROS_DISTRO=${ROS_DISTRO} \
   --file Dockerfile .
