@@ -135,6 +135,7 @@ class Detectron2node(object):
             if img_msg is not None:
                 # add result of Mask R-CNN
                 np_image = self.convert_to_cv_image(img_msg)
+                np_image = np_image[::2, ::2]
                 outputs = self.predictor(np_image)
                 result = outputs["instances"].to("cpu")
                 result_msg = self.getResult(result)
