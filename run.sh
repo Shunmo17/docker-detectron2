@@ -6,6 +6,7 @@ IMAGE_NAME="detectron2"
 GPU_NUMBER="0"
 CAM_NUMBER="unspecified"
 TEST_ENABLE="false"
+
 # HSR, MANUAL, or PC
 ROS_MASTER_MODE="PC"
 
@@ -63,10 +64,10 @@ while true; do
     esac
 done
 
-echo "===================="
-echo "| GPU Number : ${GPU_NUMBER} |"
-echo "| Camera Number : ${CAM_NUMBER} |"
-echo "===================="
+echo "================================="
+echo "| GPU Number : ${GPU_NUMBER}"
+echo "| Camera Number : ${CAM_NUMBER}"
+echo "================================="
 
 xhost +local:user
 docker run \

@@ -2,9 +2,9 @@
 
 # Default settings
 IMAGE_NAME="detectron2"
-ROS_DISTRO="melodic"
+ROS="melodic"
 GPU="on"
-CUDA="on"
+CUDA="10.0"
 
 xhost +local:user
 docker run \
@@ -22,4 +22,4 @@ docker run \
     --volume ${PWD}/common_files/include/ros_entrypoint.sh:/ros_entrypoint.sh \
     --volume ${PWD}/common_files/include/catkin_build.bash:/catkin_build.bash \
     --volume ${PWD}/include/install_detectron2.sh:/install_detectron2.sh \
-    ${IMAGE_NAME}:ros1-${ROS_DISTRO}_gpu-${GPU}_cuda-${CUDA} \
+    ${IMAGE_NAME}:ros1-${ROS}_gpu-${GPU}_cuda-${CUDA} \
