@@ -86,7 +86,7 @@ docker run \
     --volume ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh \
     --volume ${PWD}/common_files/include/ros_entrypoint.sh:/ros_entrypoint.sh \
     --volume ${PWD}/common_files/include/catkin_build.bash:/catkin_build.bash \
-    --volume ${PWD}/../../ros_packages/printeps_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs \
+    --volume ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs \
     --volume ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros \
     --volume ${PWD}/include/startup.sh:/startup.sh \
     ${IMAGE_NAME}:latest
