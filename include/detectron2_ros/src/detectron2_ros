@@ -16,7 +16,7 @@ from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
 from detectron2.utils.visualizer import Visualizer
 from detectron2_ros_msgs.msg import Result
-from sensor_msgs.msg import Image, RegionOfInterest
+from sensor_msgs.msg import Image, CompressedImage, RegionOfInterest
 from sensor_msgs.msg import PointCloud2
 
 
@@ -32,9 +32,11 @@ class Detectron2node(object):
         self._pcd_lock = threading.Lock()
         self._publish_rate = rospy.get_param('~publish_rate', 100)
         self._gen_image_from_pcd = rospy.get_param("~generate_image_from_pcd")
+        self._use_compressed_image = rospy.get_param("~use_compressed_image")
 
         # Topic name
         self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
+        self.input_compressed_image = "/env_cam" + _cam_index + "/rgb/image_raw/compressed"
         self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
@@ -54,7 +56,10 @@ class Detectron2node(object):
         if self._gen_image_from_pcd:
             self._pcd_sub = rospy.Subscriber(self.input_pcd, PointCloud2, self._pcd_callback, queue_size=1)
         else:
-            self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
+            if self._use_compressed_image:
+                self._image_sub = rospy.Subscriber(self.input_compressed_image, CompressedImage, self._image_callback, queue_size=1)
+            else:
+                self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
 
         # Publisher
         self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
@@ -135,6 +140,7 @@ class Detectron2node(object):
             if img_msg is not None:
                 # add result of Mask R-CNN
                 np_image = self.convert_to_cv_image(img_msg)
+                np_image = np_image[::2, ::2]
                 outputs = self.predictor(np_image)
                 result = outputs["instances"].to("cpu")
                 result_msg = self.getResult(result)
@@ -188,26 +194,35 @@ class Detectron2node(object):
         if image_msg is None:
             return None
 
-        self._width = image_msg.width
-        self._height = image_msg.height
-        channels = int(len(image_msg.data) / (self._width * self._height))
-
-        encoding = None
-        if image_msg.encoding.lower() in ['rgb8', 'bgr8', 'bgra8']:
-            encoding = np.uint8
-        elif image_msg.encoding.lower() == 'mono8':
-            encoding = np.uint8
-        elif image_msg.encoding.lower() == '32fc1':
-            encoding = np.float32
-            channels = 1
-
-        cv_img = np.ndarray(shape=(image_msg.height, image_msg.width, channels),
-                            dtype=encoding, buffer=image_msg.data)
-
-        if image_msg.encoding.lower() == 'mono8':
-            cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2GRAY)
+        cv_img = None
+        # if use compressed image
+        if self._use_compressed_image:
+            np_arr = np.fromstring(image_msg.data, np.uint8)
+            imageBGR = cv.imdecode(np_arr, cv.IMREAD_COLOR)
+            imageRGB = cv.cvtColor(imageBGR , cv.COLOR_BGR2RGB)
+            cv_img = imageRGB
+        # if use normal image
         else:
-            cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2BGR)
+            self._width = image_msg.width
+            self._height = image_msg.height
+            channels = int(len(image_msg.data) / (self._width * self._height))
+
+            encoding = None
+            if image_msg.encoding.lower() in ['rgb8', 'bgr8', 'bgra8']:
+                encoding = np.uint8
+            elif image_msg.encoding.lower() == 'mono8':
+                encoding = np.uint8
+            elif image_msg.encoding.lower() == '32fc1':
+                encoding = np.float32
+                channels = 1
+
+            cv_img = np.ndarray(shape=(image_msg.height, image_msg.width, channels),
+                                dtype=encoding, buffer=image_msg.data)
+
+            if image_msg.encoding.lower() == 'mono8':
+                cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2GRAY)
+            else:
+                cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2BGR)
 
         return cv_img
 
