@@ -28,7 +28,7 @@
   <arg name="visualization"                   default="true" />
   <arg name="publish_rate"                    default="100" />
 
-  <node pkg="detectron2_ros" type="detectron2_ros" name="detectron2_ros_$(arg cam_index)" ><!--  output="screen" -->
+  <node pkg="detectron2_ros" type="detectron2_ros" name="detectron2_ros_$(arg cam_index)"><!--  output="screen" -->
     <param name="cam_index"                       value="$(arg cam_index)" />
     <param name="detection_threshold"             value="$(arg detection_threshold)" />
     <param name="model"                           value="$(arg model)" />
