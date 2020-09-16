@@ -10,6 +10,10 @@ inference_test_output
 *.json
 *.diff
 
+# exception
+!fine_tuning/train_data/*
+!fine_tuning/train_data/images/*
+
 # compilation and distribution
 __pycache__
 _ext
