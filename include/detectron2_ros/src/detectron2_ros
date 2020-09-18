@@ -18,7 +18,11 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2_ros_msgs.msg import Result
 from sensor_msgs.msg import Image, CompressedImage, RegionOfInterest
 from sensor_msgs.msg import PointCloud2
-
+from detectron2 import model_zoo
+import os, json, cv2, random
+from detectron2.utils.visualizer import ColorMode
+from detectron2.data.datasets import register_coco_instances
+from detectron2.data import MetadataCatalog, DatasetCatalog
 
 class Detectron2node(object):
     def __init__(self, _cam_index):
@@ -41,14 +45,42 @@ class Detectron2node(object):
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
 
+        # get metadata for fine tuning
+        TRAIN_DATA_NAME = "07_304_train"
+        JSON_FILE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/trainval.json"
+        IMAGE_DIR = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/images"
+        register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
+        self.meta_data = MetadataCatalog.get(TRAIN_DATA_NAME)
+        dataset_dicts = DatasetCatalog.get(TRAIN_DATA_NAME)
+
         # Mask R-CNN settings
         self.cfg = get_cfg()
         self.cfg.merge_from_file(rospy.get_param('~model'))
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = rospy.get_param('~detection_threshold')  # set threshold for this model
+        self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 80
         self.cfg.MODEL.WEIGHTS = rospy.get_param('~weight')
         self.predictor = DefaultPredictor(self.cfg)
-        self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
+        # self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
+        self._class_names = self.meta_data.get("thing_classes", None)
         self._visualization = rospy.get_param('~visualization', True)
+
+        # TRAIN_DATA_NAME = "07_304_train"
+        # JSON_FILE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/trainval.json"
+        # IMAGE_DIR = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/images"
+        # register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
+        # meta_data = MetadataCatalog.get(TRAIN_DATA_NAME)
+        # dataset_dicts = DatasetCatalog.get(TRAIN_DATA_NAME)
+        # IMAGE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/images/0047.jpg"
+        # im = cv2.imread(IMAGE)
+        # outputs = self.predictor(im)  # format is documented at https://detectron2.readthedocs.io/tutorials/models.html#model-output-format
+        # v = Visualizer(im[:, :, ::-1],
+        #                 metadata=meta_data, 
+        #                 scale=0.5, 
+        #                 instance_mode=ColorMode.IMAGE_BW   # remove the colors of unsegmented pixels. This option is only available for segmentation models
+        # )
+        # out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+        # cv2.imshow("img", out.get_image()[:, :, ::-1])
+        # cv2.waitKey(0)
 
         # Subscriber
         self._pcd_sub = None
@@ -152,7 +184,11 @@ class Detectron2node(object):
 
                 # Visualize results
                 if self._visualization:
-                    v = Visualizer(np_image[:, :, ::-1], MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]), scale=1.2)
+                    # v = Visualizer(np_image[:, :, ::-1], MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]), scale=1.2)
+                    v = Visualizer(np_image[:, :, ::-1], 
+                                    metadata=self.meta_data, 
+                                    scale=1.2,
+                                    instance_mode=ColorMode.IMAGE_BW)
                     v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
                     img = v.get_image()[:, :, ::-1]
                     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)

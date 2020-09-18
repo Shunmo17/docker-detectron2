@@ -24,8 +24,8 @@
   <!-- ============================================================================= -->
 
   <arg name="base_model_name"                 default="mask_rcnn_R_101_FPN_3x" />
-  <arg name="model_name"                      default="mask_rcnn_R_101_FPN_3x_iter10" />
-  <arg name="detection_threshold"             default="0.02" />
+  <arg name="model_name"                      default="mask_rcnn_R_101_FPN_3x_iter_500_learn_5e-06" />
+  <arg name="detection_threshold"             default="0.6" />
   <arg name="generate_image_from_pcd"         default="false" />
   <arg name="use_compressed_image"            default="true" />
   <arg name="model"                           default="$(find detectron2_ros)/detectron2/configs/COCO-InstanceSegmentation/$(arg base_model_name).yaml" />
@@ -35,7 +35,7 @@
   <arg name="visualization"                   default="true" />
   <arg name="publish_rate"                    default="100" />
 
-  <node pkg="detectron2_ros" type="detectron2_ros" name="detectron2_ros_$(arg cam_index)"><!--  output="screen" -->
+  <node pkg="detectron2_ros" type="detectron2_ros" name="detectron2_ros_$(arg cam_index)" output="screen"><!--  output="screen" -->
     <param name="cam_index"                       value="$(arg cam_index)" />
     <param name="detection_threshold"             value="$(arg detection_threshold)" />
     <param name="model"                           value="$(arg model)" />

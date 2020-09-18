@@ -20,6 +20,8 @@ from detectron2.utils.visualizer import ColorMode
 from detectron2.config import get_cfg
 from detectron2.data.datasets import register_coco_instances
 
+from detectron2.engine import DefaultTrainer
+
 # =============================================================
 #   Train Data Settings
 # =============================================================
@@ -34,13 +36,14 @@ ORIGINAL_CFG_FILE = "./../configs/COCO-InstanceSegmentation/" + ORIGINAL_MODEL_N
 ORIGINAL_WEIGHT_FILE = "./../weights/COCO-InstanceSegmentation/" + ORIGINAL_MODEL_NAME + ".pkl"
 
 # Output Setting
-OUTPUT_DIR = "./../weights/COCO-InstanceSegmentaion_fine-tuning"
+OUTPUT_DIR = "./../weights/COCO-InstanceSegmentation"
 
 # =============================================================
 #   Hyper Parameters
 # =============================================================
-ITERRAITON_NUM = [10, 11, 12]
-LERNING_RATE = [0.00025]
+ITERRAITON_NUM = [200, 500, 1000, 3000, 5000, 8000, 10000, 20000]
+# 1/10, 1/20, 1/50, 1/100
+LERNING_RATE = [0.000025, 0.0000125, 0.000005, 0.0000025, 0.00000125]
 
 # document : https://detectron2.readthedocs.io/_modules/detectron2/data/datasets/register_coco.html
 register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
@@ -48,6 +51,13 @@ register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
 cfg = get_cfg()
 for iteration_num in ITERRAITON_NUM:
     for learning_rate in LERNING_RATE:
+        print("========= Traing Start =========")
+        print("Json File : {}".format(JSON_FILE))
+        print("Image Directory : {}".format(IMAGE_DIR))
+        print("Iteration Num : {}".format(iteration_num))
+        print("Learning Rate : {}".format(learning_rate))
+        print("================================")
+
         cfg.merge_from_file(ORIGINAL_CFG_FILE)
         cfg.DATASETS.TRAIN = (TRAIN_DATA_NAME,)
         cfg.DATASETS.TEST = ()
@@ -57,7 +67,7 @@ for iteration_num in ITERRAITON_NUM:
         cfg.SOLVER.BASE_LR = learning_rate
         cfg.SOLVER.MAX_ITER = iteration_num
         cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 3
+        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 80
         cfg.OUTPUT_DIR = OUTPUT_DIR
 
         os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -67,4 +77,13 @@ for iteration_num in ITERRAITON_NUM:
 
         os.system("chmod 777 {}/model_final.pth".format(OUTPUT_DIR))
         os.system("mv {}/model_final.pth {}/{}.pth".format(OUTPUT_DIR, OUTPUT_DIR, ORIGINAL_MODEL_NAME + "_iter_" + str(iteration_num) + "_learn_" + str(learning_rate)[2:]))
+        
+        print("========= Traing Finished =========")
+        print("Json File : {}".format(JSON_FILE))
+        print("Image Directory : {}".format(IMAGE_DIR))
+        print("Iteration Num : {}".format(iteration_num))
+        print("Learning Rate : {}".format(learning_rate))
+        print("===================================")
+
 os.system("ls ./../weights/COCO-InstanceSegmentation")
+# os.system("tensorboard --logdir {}".format(OUTPUT_DIR))
