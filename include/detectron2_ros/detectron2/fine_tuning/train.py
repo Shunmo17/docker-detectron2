@@ -41,7 +41,7 @@ OUTPUT_DIR = "./../weights/COCO-InstanceSegmentation"
 # =============================================================
 #   Hyper Parameters
 # =============================================================
-ITERRAITON_NUM = [200, 500, 1000, 3000, 5000, 8000, 10000, 20000]
+ITERRAITON_NUM = [10, 100, 1000, 3000, 5000, 10000, 20000]
 # 1/10, 1/20, 1/50, 1/100
 LERNING_RATE = [0.000025, 0.0000125, 0.000005, 0.0000025, 0.00000125]
 
@@ -74,10 +74,17 @@ for iteration_num in ITERRAITON_NUM:
         trainer = DefaultTrainer(cfg) 
         trainer.resume_or_load(resume=False)
         trainer.train()
-
+        
+        # save weight file
         os.system("chmod 777 {}/model_final.pth".format(OUTPUT_DIR))
         os.system("mv {}/model_final.pth {}/{}.pth".format(OUTPUT_DIR, OUTPUT_DIR, ORIGINAL_MODEL_NAME + "_iter_" + str(iteration_num) + "_learn_" + str(learning_rate)[2:]))
         
+        # save log file
+        folder_name = (ORIGINAL_MODEL_NAME + "_iter_" + str(iteration_num) + "_learn_" + str(learning_rate)).replace(".", "-")
+        os.system("mkdir ./../weights/COCO-InstanceSegmentation/{}".format(folder_name))
+        os.system("mv ./../weights/COCO-InstanceSegmentation/events* ./../weights/COCO-InstanceSegmentation/{}/".format(folder_name))
+        os.system("chmod 777 -R ./../weights/COCO-InstanceSegmentation/*  ")
+
         print("========= Traing Finished =========")
         print("Json File : {}".format(JSON_FILE))
         print("Image Directory : {}".format(IMAGE_DIR))
