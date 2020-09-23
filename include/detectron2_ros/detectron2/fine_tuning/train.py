@@ -41,9 +41,9 @@ OUTPUT_DIR = "./../weights/COCO-InstanceSegmentation"
 # =============================================================
 #   Hyper Parameters
 # =============================================================
-ITERRAITON_NUM = [10, 100, 1000, 3000, 5000, 10000, 20000]
-# 1/10, 1/20, 1/50, 1/100
-LERNING_RATE = [0.000025, 0.0000125, 0.000005, 0.0000025, 0.00000125]
+ITERRAITON_NUM = [9000]
+# 1/100, 1/500
+LERNING_RATE = [0.00005]
 
 # document : https://detectron2.readthedocs.io/_modules/detectron2/data/datasets/register_coco.html
 register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
@@ -77,7 +77,7 @@ for iteration_num in ITERRAITON_NUM:
         
         # save weight file
         os.system("chmod 777 {}/model_final.pth".format(OUTPUT_DIR))
-        os.system("mv {}/model_final.pth {}/{}.pth".format(OUTPUT_DIR, OUTPUT_DIR, ORIGINAL_MODEL_NAME + "_iter_" + str(iteration_num) + "_learn_" + str(learning_rate)[2:]))
+        os.system("mv {}/model_final.pth {}/{}.pth".format(OUTPUT_DIR, OUTPUT_DIR, ORIGINAL_MODEL_NAME + "_iter_" + str(iteration_num) + "_learn_" + str(learning_rate)))
         
         # save log file
         folder_name = (ORIGINAL_MODEL_NAME + "_iter_" + str(iteration_num) + "_learn_" + str(learning_rate)).replace(".", "-")

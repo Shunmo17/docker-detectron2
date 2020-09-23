@@ -11,8 +11,8 @@ inference_test_output
 *.diff
 
 # exception
-!fine_tuning/train_data/*
-!fine_tuning/train_data/images/*
+# !fine_tuning/train_data/*
+# !fine_tuning/train_data/images/*
 
 # compilation and distribution
 __pycache__
@@ -48,3 +48,5 @@ wheels/
 /datasets
 /projects/*/datasets
 /models
+
+*.tar.xz

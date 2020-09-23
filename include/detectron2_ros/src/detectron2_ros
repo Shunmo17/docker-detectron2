@@ -58,7 +58,11 @@ class Detectron2node(object):
         self.cfg.merge_from_file(rospy.get_param('~model'))
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = rospy.get_param('~detection_threshold')  # set threshold for this model
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 80
-        self.cfg.MODEL.WEIGHTS = rospy.get_param('~weight')
+        # use custom model
+        if _cam_index in ["03", "04", "07", "08"]:
+            self.cfg.MODEL.WEIGHTS = rospy.get_param('~custom_model_weight')
+        else:
+            self.cfg.MODEL.WEIGHTS = rospy.get_param('~base_model_weight')
         self.predictor = DefaultPredictor(self.cfg)
         # self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
         self._class_names = self.meta_data.get("thing_classes", None)

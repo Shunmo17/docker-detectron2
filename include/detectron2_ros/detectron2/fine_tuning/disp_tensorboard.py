@@ -24,4 +24,3 @@ else:
     print("---------------------------------------")
     print("{} iteration_num learning_rate".format(sys.argv[0]))
     print("=======================================")
-
