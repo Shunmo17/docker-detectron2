@@ -73,7 +73,7 @@ xhost +local:user
 docker run \
     -it --rm \
     --net host \
-    -gpus device=${GPU_NUMBER} \
+    --gpus device=${GPU_NUMBER} \
     --env DISPLAY=${DISPLAY} \
     --env QT_X11_NO_MITSHM=1 \
     --env ROS_MASTER_MODE=${ROS_MASTER_MODE} \
