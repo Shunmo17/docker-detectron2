@@ -10,7 +10,7 @@ services:
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: 0
             TEST_ENABLE: "false"
-            ROS_MASTER_MODE: "HSR"
+            ROS_MASTER_MODE: "PC"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
