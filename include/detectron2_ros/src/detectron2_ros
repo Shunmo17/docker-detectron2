@@ -59,7 +59,7 @@ class Detectron2node(object):
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = rospy.get_param('~detection_threshold')  # set threshold for this model
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 80
         # use custom model
-        if _cam_index in ["03", "04", "07", "08"]:
+        if _cam_index in ["03", "04", "07", "08", "10", "11"]:
             self.cfg.MODEL.WEIGHTS = rospy.get_param('~custom_model_weight')
         else:
             self.cfg.MODEL.WEIGHTS = rospy.get_param('~base_model_weight')
