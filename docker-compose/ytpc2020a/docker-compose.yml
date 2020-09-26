@@ -36,6 +36,7 @@ services:
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: 1
             TEST_ENABLE: "false"
+            ROS_MASTER_MODE: "VPN"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
@@ -61,6 +62,7 @@ services:
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: 2
             TEST_ENABLE: "false"
+            ROS_MASTER_MODE: "VPN"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
@@ -86,6 +88,7 @@ services:
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: 3
             TEST_ENABLE: "false"
+            ROS_MASTER_MODE: "VPN"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
@@ -111,6 +114,7 @@ services:
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: 4
             TEST_ENABLE: "false"
+            ROS_MASTER_MODE: "VPN"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
@@ -136,6 +140,7 @@ services:
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: 5
             TEST_ENABLE: "false"
+            ROS_MASTER_MODE: "VPN"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
