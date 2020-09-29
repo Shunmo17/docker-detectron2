@@ -177,7 +177,7 @@ class Detectron2node(object):
                 # add result of Mask R-CNN
                 np_image = self.convert_to_cv_image(img_msg)
                 # Only if real, make image smaller
-                if rospy.get_param("/mode", "not_specified") == "real":
+                if rospy.get_param("/mode", "not_specified") == "real" and rospy.get_param("~enable_quater_pcd"):
                     np_image = np_image[::2, ::2]
                 outputs = self.predictor(np_image)
                 result = outputs["instances"].to("cpu")

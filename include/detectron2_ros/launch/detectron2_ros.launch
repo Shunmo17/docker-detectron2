@@ -51,6 +51,7 @@
   <arg name="use_compressed_image"            default="true" />
   <arg name="visualization"                   default="false" />
   <arg name="publish_rate"                    default="100" />
+  <arg name="enable_quater_pcd"               default="false" />
 
   <node pkg="detectron2_ros" type="detectron2_ros" name="detectron2_ros_$(arg cam_index)"><!--  output="screen" -->
     <param name="cam_index"                       value="$(arg cam_index)" />
