@@ -64,5 +64,6 @@
     <param name="publish_rate"                    value="$(arg publish_rate)" />
     <param name="generate_image_from_pcd"         value="$(arg generate_image_from_pcd)" />
     <param name="use_compressed_image"            value="$(arg use_compressed_image)" />
+    <param name="enable_quater_pcd"               value="$(arg enable_quater_pcd)" />
   </node>
 </launch>
