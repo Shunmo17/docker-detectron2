@@ -55,6 +55,7 @@ echo "------------------------------------------------"
 echo "Start to build ubuntu${UBUNTU} base image"
 echo "------------------------------------------------"
 DOCKERFILE="${PWD}/common_files/Dockerfiles/ubuntu/Dockerfile"
+export DOCKER_BUILDKIT=1
 if [ ${CUDA} = "none" ]; then
   docker build \
     --rm \
