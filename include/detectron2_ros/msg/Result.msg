@@ -13,4 +13,4 @@ string[] class_names
 float32[] scores
 
 # Instance masks as Image
-sensor_msgs/Image[] masks
+sensor_msgs/CompressedImage[] masks
