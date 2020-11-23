@@ -7,52 +7,65 @@ FROM ${BASE_IMAGE}
 ##############################################################################
 ##                                  Detectron                               ##
 ##############################################################################
-# # ref https://github.com/DavidFernandezChaves/Detectron2_ros
-# # Python v3.7 (in virtual environment)
-# RUN apt-get update && apt-get install -y \
-#     python3.7 \
-#     python3-virtualenv
-# RUN apt-get update && apt-get install -y python-pip
-# RUN pip install --upgrade pip
-# RUN pip install virtualenv
-# RUN mkdir ~/.virtualenvs
-# RUN pip install virtualenvwrapper
-# RUN export WORKON_HOME=~/.virtualenvs
-# RUN echo '. /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc 
+# # install cuda
+# ENV CUDA_VERSION 10-1
+# ENV CUDNN_VERSION 7
+# RUN apt update && apt install -y software-properties-common
+# RUN add-apt-repository ppa:graphics-drivers
+# RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+# RUN echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" >> /etc/apt/sources.list.d/cuda.list
+# RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" >> /etc/apt/sources.list.d/cuda_learn.list
 
-# # create virtual environment
-# ## ref : https://github.com/NeuralEnsemble/pype9/blob/master/Dockerfile
-# # RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; mkvirtualenv --python=python3 detectron2_ros"
-# RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; python3.7 -m virtualenv --python=/usr/bin/python3 /opt/venv"
-# RUN echo "============== Python version =============="
-# RUN python3 --version
-# RUN echo "============================================"
-# # install git
-# RUN apt-get update && apt-get install -y git
+# RUN apt update && apt install -y \
+#     cuda-${CUDA_VERSION} libcudnn${CUDNN_VERSION}
+# RUN echo "export PATH=`/usr/local/cuda/bin:\${PATH}`" >> ~/.bashrc \
+#     && echo "LD_LIBRARY_PATH='/usr/local/cuda/lib64:\${LD_LIBRARY_PATH}'" >> ~/.bashrc
 
-# # install dependencies
-# RUN /opt/venv/bin/pip install -U torch==1.4+cu100 torchvision==0.5+cu100 -f https://download.pytorch.org/whl/torch_stable.html
-# RUN /opt/venv/bin/pip install --ignore-installed cython pyyaml==5.1
-# RUN /opt/venv/bin/pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+# # install cudnn
+# # RUN echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" | tee /etc/apt/sources.list.d/nvidia-ml.list
+# # RUN apt update && apt install -y \
+# #     libcudnn7-dev=7.5.0.56-1+cuda10.0
 
-# RUN python --version
+# RUN apt update && apt-get install -y \
+#     python3-pip \
+#     git \
+#     python3.7
+# RUN pip3 install \
+#     torch==1.4.0+cu100 \
+#     torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html
+# RUN pip3 install cython pyyaml==5.1 && \
+#     pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI' && \
+#     pip3 install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu100/index.html && \
+#     pip3 install opencv-python && \
+#     pip3 install rospkg
+# RUN echo "workon detectron2_ros" >> ~/.bashrc && \
+#     echo "source /startup.sh" >> ~/.bashrc
 
-# RUN /opt/venv/bin/pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu100/index.html
-# RUN /opt/venv/bin/pip install opencv-python
-# RUN /opt/venv/bin/pip install rospkg
+# # install ros_numpy
+# RUN apt update && apt install -y \
+#     python-numpy
 
-# download models 
-# RUN mkdir /MODEL_ZOO
-# WORKDIR /MODEL_ZOO
-# RUN wget -O mask_rcnn_X_101_32x8d_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_X_101_32x8d_FPN_3x/139653917/model_final_2d9806.pkl && \
-#     wget -O mask_rcnn_R_101_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x/138205316/model_final_a3ec72.pkl && \
-#     wget -O mask_rcnn_R_101_DC5_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_DC5_3x/138363294/model_final_0464b7.pkl && \
-#     wget -O mask_rcnn_R_101_C4_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_C4_3x/138363239/model_final_a2914c.pkl && \
-#     wget -O mask_rcnn_R_50_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
+# RUN apt update && apt install -y software-properties-common
+# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+# RUN mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+# RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+# RUN add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+# RUN apt update && apt -y install cuda
 
-# install ros_numpy
 RUN apt update && apt install -y \
-    ros-melodic-ros-numpy
+    python3-pip \
+    git \
+    python3.8 \
+    python3-numpy
+RUN pip3 install \
+    torch==1.7.0 \
+    torchvision==0.8.0 \
+    opencv-python \
+    cython \
+    pyyaml==5.1 \
+    rospkg \
+    detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu110/torch1.7/index.html
+RUN pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
 ##############################################################################
 ##                              bashrc setting                              ##

@@ -90,5 +90,5 @@ docker run \
     --volume ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs \
     --volume ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros \
     --volume ${PWD}/include/startup.sh:/startup.sh \
-    ${IMAGE_NAME}:latest
+    ${IMAGE_NAME}:ros1-noetic_gpu-on_cuda-none
     
