@@ -2,10 +2,10 @@
 
 # Default settings
 IMAGE_NAME="detectron2"
-UBUNTU="20"
+UBUNTU="20.04"
 ROS="noetic"
 GPU="on"
-CUDA="none"
+CUDA="11.0-devel"
 
 # Usage
 function usage() {
@@ -45,87 +45,35 @@ while true; do
   esac
 done
 
-if [ ${ROS} = "kinetic" ]; then UBUNTU="16"; fi
-if [ ${ROS} = "melodic" ]; then UBUNTU="18"; fi
-if [ ${ROS} = "noetic" ]; then UBUNTU="20"; fi
+export DOCKER_BUILDKIT=1
 if [ ${GPU} = "off" ]; then CUDA="none"; fi
-
-# # build ubuntu base image
-# echo "------------------------------------------------"
-# echo "Start to build ubuntu${UBUNTU} base image"
-# echo "------------------------------------------------"
-# DOCKERFILE="${PWD}/common_files/Dockerfiles/ubuntu/Dockerfile"
-# export DOCKER_BUILDKIT=1
-# if [ ${CUDA} = "none" ]; then
-#   docker build \
-#     --rm \
-#     --tag shunmo_base:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA} \
-#     --build-arg BASE_IMAGE="ubuntu:${UBUNTU}.04" \
-#     --build-arg UBUNTU=${UBUNTU} \
-#     --file ${DOCKERFILE} .
-# else
-#   docker build \
-#     --rm \
-#     --tag shunmo_base:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA} \
-#     --build-arg BASE_IMAGE="nvidia/cuda:${CUDA}-devel-ubuntu${UBUNTU}.04" \
-#     --build-arg UBUNTU=${UBUNTU} \
-#     --file ${DOCKERFILE} .
-# fi
-# echo "------------------------------------------------"
-# echo "Finished to build ubuntu${UBUNTU} base image"
-# echo "------------------------------------------------"
-
-# # for using nvidia gpu
-# if [ ${GPU} = "on" ]; then
-#   echo "------------------------------------------------"
-#   echo "Start to build image for using nvidia gpu"
-#   echo "------------------------------------------------"
-#   DOCKERFILE="${PWD}/common_files/Dockerfiles/nvidia-gpu/Dockerfile"
-#   docker build \
-#     --rm \
-#     --tag shunmo_base:ubuntu${UBUNTU}_gpu-on_cuda-${CUDA} \
-#     --build-arg BASE_IMAGE="shunmo_base:ubuntu${UBUNTU}_gpu-off_cuda-${CUDA}" \
-#     --file ${DOCKERFILE} .
-#   echo "------------------------------------------------"
-#   echo "Finished to build image for using nvidia gpu"
-#   echo "------------------------------------------------"
-# fi
-
-# # build ros base image
-# echo "------------------------------------------------"
-# echo "Start to build ros ${ROS} image"
-# echo "------------------------------------------------"
-# DOCKERFILE="${PWD}/common_files/Dockerfiles/ros1/Dockerfile"
-# docker build \
-#     --rm \
-#     --tag shunmo_base:ros1-${ROS}_gpu-${GPU}_cuda-${CUDA} \
-#     --build-arg BASE_IMAGE="shunmo_base:ubuntu${UBUNTU}_gpu-${GPU}_cuda-${CUDA}" \
-#     --build-arg ROS_DISTRO=${ROS} \
-#     --file ${DOCKERFILE} .
-#   echo "------------------------------------------------"
-# echo "Finished to build ros image"
-# echo "------------------------------------------------"
-
 echo "------------------------------------------------"
 echo "Start to build ${IMAGE_NAME} image"
 echo "------------------------------------------------"
-# build unique image
-export DOCKER_BUILDKIT=1
-docker build \
-  --rm \
-  --tag ${IMAGE_NAME}:ros1-${ROS}_gpu-${GPU}_cuda-${CUDA} \
-  --build-arg BASE_IMAGE="ghcr.io/shunmo17/ros1.nvidia:noetic-cuda11.1-devel" \
-  --build-arg ROS_DISTRO=${ROS} \
-  --file Dockerfile .
+if [ ${GPU} = "on" ]; then
+  docker build \
+    --rm \
+    --tag ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA} \
+    --build-arg BASE_IMAGE="ghcr.io/shunmo17/ubuntu.nvidia:${UBUNTU}-cuda${CUDA}" \
+    --build-arg ROS_DISTRO=${ROS} \
+    --file Dockerfile .
+else
+  docker build \
+    --rm \
+    --tag ${IMAGE_NAME}:${ROS} \
+    --build-arg BASE_IMAGE="ghcr.io/shunmo17/ubuntu:${UBUNTU}" \
+    --build-arg ROS_DISTRO=${ROS} \
+    --file Dockerfile .
+fi
 echo "------------------------------------------------"
 echo "Finished to build ${IMAGE_NAME} image"
 echo "------------------------------------------------"
 
 echo "================================================"
-echo " ${IMAGE_NAME}"
+echo " ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}"
 echo "================================================"
-echo "UBUNTU : UBUNTU${UBUNTU}.04"
-echo "ROS : ${ROS}"
-echo "GPU : ${GPU}"
-echo "CUDA : ${CUDA}"
+echo "UBUNTU : Ubuntu${UBUNTU}"
+echo "ROS    : ${ROS}"
+echo "GPU    : ${GPU}"
+echo "CUDA   : ${CUDA}"
 echo "================================================"
