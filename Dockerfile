@@ -7,39 +7,24 @@ FROM ${BASE_IMAGE}
 ##############################################################################
 ##                                  Detectron                               ##
 ##############################################################################
-# # ref https://github.com/DavidFernandezChaves/Detectron2_ros
-# # Python v3.7 (in virtual environment)
-# RUN apt-get update && apt-get install -y \
-#     python3.7 \
-#     python3-virtualenv
-# RUN apt-get update && apt-get install -y python-pip
-# RUN pip install --upgrade pip
-# RUN pip install virtualenv
-# RUN mkdir ~/.virtualenvs
-# RUN pip install virtualenvwrapper
-# RUN export WORKON_HOME=~/.virtualenvs
-# RUN echo '. /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc 
+# install dependencies
+RUN pip3 install -U torch==1.7+cu110 \torchvision==0.8.1+cu110 -f \
+    https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install --ignore-installed cython pyyaml==5.1
+RUN pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
-# # create virtual environment
-# ## ref : https://github.com/NeuralEnsemble/pype9/blob/master/Dockerfile
-# # RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; mkvirtualenv --python=python3 detectron2_ros"
-# RUN /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; python3.7 -m virtualenv --python=/usr/bin/python3 /opt/venv"
-# RUN echo "============== Python version =============="
-# RUN python3 --version
-# RUN echo "============================================"
-# # install git
-# RUN apt-get update && apt-get install -y git
+RUN python3 -m pip install detectron2 -f \
+  https://dl.fbaipublicfiles.com/detectron2/wheels/cu110/torch1.7/index.html
+RUN pip3 install opencv-python rospkg
 
-# # install dependencies
-# RUN /opt/venv/bin/pip install -U torch==1.4+cu100 torchvision==0.5+cu100 -f https://download.pytorch.org/whl/torch_stable.html
-# RUN /opt/venv/bin/pip install --ignore-installed cython pyyaml==5.1
-# RUN /opt/venv/bin/pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+# clone ros_numpy
+WORKDIR /catkin_ws/src
+RUN git clone https://github.com/eric-wieser/ros_numpy.git -b 0.0.4
 
-# RUN python --version
-
-# RUN /opt/venv/bin/pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu100/index.html
-# RUN /opt/venv/bin/pip install opencv-python
-# RUN /opt/venv/bin/pip install rospkg
+# clone detectron2
+RUN mkdir /catkin_ws/src/detectron2_ros
+WORKDIR /catkin_ws/src/detectron2_ros
+RUN git clone https://github.com/facebookresearch/detectron2 -b master
 
 # download models 
 # RUN mkdir /MODEL_ZOO
@@ -50,9 +35,8 @@ FROM ${BASE_IMAGE}
 #     wget -O mask_rcnn_R_101_C4_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_101_C4_3x/138363239/model_final_a2914c.pkl && \
 #     wget -O mask_rcnn_R_50_FPN_3x.pkl https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
 
-# install ros_numpy
-RUN apt update && apt install -y \
-    ros-melodic-ros-numpy
+# set automatically starting detectron2 node
+RUN echo "source /startup.sh" >> ~/.bashrc
 
 ##############################################################################
 ##                              bashrc setting                              ##

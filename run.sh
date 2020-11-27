@@ -8,7 +8,7 @@ CAM_NUMBER="unspecified"
 TEST_ENABLE="false"
 
 # HSR, MANUAL, or PC
-ROS_MASTER_MODE="HSR"
+ROS_MASTER_MODE="PC"
 
 # Usage
 function usage() {
@@ -89,6 +89,6 @@ docker run \
     --volume ${PWD}/common_files/include/catkin_build.bash:/catkin_build.bash \
     --volume ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs \
     --volume ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros \
-    --volume ${PWD}/include/startup.sh:/startup.sh \
-    ${IMAGE_NAME}:latest
+    --volume ${PWD}/include/startup_for_standalone.sh.sh:/startup.sh \
+    ${IMAGE_NAME}.nvidia:noetic-cuda11.0-devel
     
