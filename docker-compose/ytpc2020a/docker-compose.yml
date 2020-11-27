@@ -23,7 +23,7 @@ services:
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: detectron2:latest
+        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
     detectron2_env_cam01:
@@ -49,7 +49,7 @@ services:
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: detectron2:latest
+        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
     detectron2_env_cam02:
@@ -75,7 +75,7 @@ services:
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: detectron2:latest
+        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
     detectron2_env_cam03:
@@ -101,7 +101,7 @@ services:
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: detectron2:latest
+        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
     detectron2_env_cam04:
@@ -127,7 +127,7 @@ services:
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: detectron2:latest
+        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
     detectron2_env_cam05:
@@ -153,5 +153,5 @@ services:
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: detectron2:latest
+        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
