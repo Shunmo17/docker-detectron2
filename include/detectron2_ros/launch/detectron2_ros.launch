@@ -49,7 +49,7 @@
   <arg name="detection_threshold"             default="0.6" />
   <arg name="generate_image_from_pcd"         default="false" />
   <arg name="use_compressed_image"            default="true" />
-  <arg name="visualization"                   default="true" />
+  <arg name="visualization"                   default="false" />
   <arg name="publish_rate"                    default="100" />
   <arg name="enable_quater_pcd"               default="true" />
 
