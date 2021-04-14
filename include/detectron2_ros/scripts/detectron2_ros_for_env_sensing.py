@@ -11,10 +11,10 @@ import ros_numpy
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
 from cv_bridge import CvBridge, CvBridgeError
-# import some common detectron2 utilities
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
-from detectron2.utils.visualizer import Visualizer
+# from detectron2.utils.visualizer import Visualizer
+from custom_modules.visualizer import Visualizer
 from detectron2_ros_msgs.msg import Result
 from sensor_msgs.msg import Image, CompressedImage, RegionOfInterest
 from sensor_msgs.msg import PointCloud2
@@ -34,9 +34,12 @@ class Detectron2node(object):
         self._pcd_tmp = None
         self._img_lock = threading.Lock()
         self._pcd_lock = threading.Lock()
-        self._publish_rate = rospy.get_param('~publish_rate', 100)
-        self._gen_image_from_pcd = rospy.get_param("~generate_image_from_pcd")
-        self._use_compressed_image = rospy.get_param("~use_compressed_image")
+        self._publish_rate = 100.0
+        self._gen_image_from_pcd = rospy.get_param("/detectron2/toggle/generate_image_from_pcd")
+        self._use_compressed_image = rospy.get_param("/detectron2/toggle/use_compressed_image")
+        self._use_custom_model = rospy.get_param("/detectron2/toggle/use_custom_model/" + "/env_cam" + _cam_index)
+        self._enable_quater_pcd = rospy.get_param("/detectron2/toggle/enable_quater_pcd")
+        self._system_mode = rospy.get_param("/mode", "not_specified")
 
         # Topic name
         self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
@@ -45,29 +48,32 @@ class Detectron2node(object):
         self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
         self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
 
-        # get metadata for fine tuning
-        TRAIN_DATA_NAME = "07_304_train"
-        JSON_FILE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/trainval.json"
-        IMAGE_DIR = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/images"
-        register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
-        self.meta_data = MetadataCatalog.get(TRAIN_DATA_NAME)
-        dataset_dicts = DatasetCatalog.get(TRAIN_DATA_NAME)
+        # # get metadata for fine tuning
+        # TRAIN_DATA_NAME = "07_304_train"
+        # JSON_FILE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/trainval.json"
+        # IMAGE_DIR = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/images"
+        # register_coco_instances(TRAIN_DATA_NAME, {}, JSON_FILE, IMAGE_DIR)
+        # self.meta_data = MetadataCatalog.get(TRAIN_DATA_NAME)
+        # dataset_dicts = DatasetCatalog.get(TRAIN_DATA_NAME)
 
         # Mask R-CNN settings
         self.cfg = get_cfg()
-        self.cfg.merge_from_file(rospy.get_param('~model'))
-        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = rospy.get_param('~detection_threshold')  # set threshold for this model
+        self.cfg.merge_from_file(rospy.get_param("/detectron2/parameter/model"))
+        self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = rospy.get_param("/detectron2/parameter/detection_threshold")  # set threshold for this model
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 80
         # use custom model
-        if _cam_index in ["03", "04", "07", "08", "10", "11"]:
-            self.cfg.MODEL.WEIGHTS = rospy.get_param('~custom_model_weight')
+        if self._use_custom_model:
+            self.cfg.MODEL.WEIGHTS = rospy.get_param("/detectron2/parameter/weight/custom")
         else:
-            self.cfg.MODEL.WEIGHTS = rospy.get_param('~base_model_weight')
+            self.cfg.MODEL.WEIGHTS = rospy.get_param("/detectron2/parameter/weight/base")
         self.predictor = DefaultPredictor(self.cfg)
-        # self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
-        self._class_names = self.meta_data.get("thing_classes", None)
-        self._visualization = rospy.get_param('~visualization', True)
-
+        self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
+        # self._class_names = self.meta_data.get("thing_classes", None)
+        self._visualization = rospy.get_param("/detectron2/toggle/visualization")
+        
+        # =================================================================================
+        # Using when training
+        # =================================================================================
         # TRAIN_DATA_NAME = "07_304_train"
         # JSON_FILE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/trainval.json"
         # IMAGE_DIR = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/images"
@@ -85,6 +91,7 @@ class Detectron2node(object):
         # out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
         # cv2.imshow("img", out.get_image()[:, :, ::-1])
         # cv2.waitKey(0)
+        # =================================================================================
 
         # Subscriber
         self._pcd_sub = None
@@ -130,7 +137,7 @@ class Detectron2node(object):
                     height = 1024
                 else:
                     rospy.logerr("[Detectron2 ROS] Received Unknown Resolution PCD")
-                    rospy.logerr("    You can use generating image from pcd onyl when using Azure Kinect DK.")
+                    rospy.logerr("    You can use generating image from pcd only when using Azure Kinect DK.")
 
             # convert
             array = np.zeros((height, width), dtype=np.float32)
@@ -177,22 +184,24 @@ class Detectron2node(object):
                 # add result of Mask R-CNN
                 np_image = self.convert_to_cv_image(img_msg)
                 # Only if real, make image smaller
-                if rospy.get_param("/mode", "not_specified") == "real" and rospy.get_param("~enable_quater_pcd"):
-                    np_image = np_image[::2, ::2]
+                if self._system_mode == "real" and self._enable_quater_pcd:
+                    np_image = np_image[::2, ::2, :]
                 outputs = self.predictor(np_image)
                 result = outputs["instances"].to("cpu")
                 result_msg = self.getResult(result)
 
                 # publish result msg
                 self._result_pub.publish(result_msg)
-
                 # Visualize results
                 if self._visualization:
-                    # v = Visualizer(np_image[:, :, ::-1], MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]), scale=1.2)
-                    v = Visualizer(np_image[:, :, ::-1], 
-                                    metadata=self.meta_data, 
+                    v = Visualizer(np_image[:, :, ::-1],
+                                    metadata=MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]),
                                     scale=1.2,
-                                    instance_mode=ColorMode.IMAGE_BW)
+                                    instance_mode=ColorMode.SEGMENTATION)
+                    # v = Visualizer(np_image[:, :, ::-1], 
+                    #                 metadata=self.meta_data, 
+                    #                 scale=1.2,
+                    #                 instance_mode=ColorMode.SEGMENTATION)
                     v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
                     img = v.get_image()[:, :, ::-1]
                     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
@@ -242,7 +251,7 @@ class Detectron2node(object):
         if self._use_compressed_image:
             np_arr = np.fromstring(image_msg.data, np.uint8)
             imageBGR = cv.imdecode(np_arr, cv.IMREAD_COLOR)
-            imageRGB = cv.cvtColor(imageBGR , cv.COLOR_BGR2RGB)
+            imageRGB = cv.cvtColor(imageBGR, cv.COLOR_BGR2RGB)
             cv_img = imageRGB
         # if use normal image
         else:
@@ -290,23 +299,6 @@ def main(argv):
     node = Detectron2node("{:0=2}".format(cam_index))
 
     print("===== Mask R-CNN with Detectron2 ======================")
-    # print("Parameter")
-    # print("    cam_index : {}".format(cam_index))
-    # print("    model : {}".format(rospy.get_param('~model')))
-    # print("    detection_threshold : {}".format(node.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST))
-    # print("    weight : {}".format(node.cfg.MODEL.WEIGHTS))
-    # print("    thing_classes : {}".format("OMITTED"))
-    # # print("    thing_classes : {}".format(node._class_names))
-    # print("    visualization : {}".format(node._visualization))
-    # print("    publish_rate : {}".format(node._publish_rate))
-    # print("Subscribe")
-    # print("    sensor_msgs/Image : {}".format(node.input_image))
-    # print("    sensor_msgs/PointCloud2 : {}".format(node.input_pcd))
-    # print("Publish")
-    # print("    detectron2_ros/Result : {}".format(node.output_result_topic))
-    # if node._visualization:
-    #     print("    sensor_msgs/Image : {}".format(node.output_visualization_topic))
-    # print("=============================================")
     node.run()
 
 
