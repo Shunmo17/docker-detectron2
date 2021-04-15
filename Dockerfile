@@ -26,6 +26,11 @@ RUN git clone https://github.com/eric-wieser/ros_numpy.git -b 0.0.4
 # WORKDIR /catkin_ws/src/detectron2_ros
 # RUN git clone https://github.com/facebookresearch/detectron2 -b master
 
+# to send Compressed Image
+RUN apt update && apt install -y \
+  ros-noetic-image-transport \
+  ros-noetic-image-transport-plugins
+
 # set automatically starting detectron2 node
 RUN echo "source /startup.sh" >> ~/.bashrc
 
