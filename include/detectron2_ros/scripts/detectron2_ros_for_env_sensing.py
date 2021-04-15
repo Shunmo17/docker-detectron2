@@ -205,7 +205,9 @@ class Detectron2node(object):
                     v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
                     img = v.get_image()[:, :, ::-1]
                     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-                    image_msg = self._bridge.cv2_to_imgmsg(img)
+                    image_msg = self._bridge.cv2_to_imgmsg(img, "bgr8")
+                    image_msg.header.stamp = rospy.Time.now()
+                    image_msg.header.frame_id = result_msg.header.frame_id
                     self._vis_pub.publish(image_msg)
 
             rate.sleep()
