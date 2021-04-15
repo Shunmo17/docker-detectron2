@@ -111,7 +111,7 @@ class Detectron2node(object):
             self._vis_pub = rospy.Publisher(self.output_visualization_topic, Image, queue_size=1)
 
     def generate_image(self, pcd):
-        # start_time = time.time()
+        start_time = time.time()
 
         # pcd and image size
         if pcd is not None:
@@ -150,8 +150,8 @@ class Detectron2node(object):
             # convert color (html color -> rgb)
             data = array.view(np.uint8).reshape(array.shape+(4,))[..., :3]
             image = ros_numpy.msgify(Image, data, encoding='bgr8')
-            # finish_time = time.time()
-            # print("generate image time : {0}".format(finish_time-start_time))
+            finish_time = time.time()
+            rospy.logdebug("generate image time : {0}".format(finish_time-start_time))
 
             return image
         else:
@@ -281,14 +281,14 @@ class Detectron2node(object):
         return cv_img
 
     def _image_callback(self, msg):
-        rospy.loginfo("[detectron2_ros] Get an image")
+        rospy.logdebug("Get image")
         if self._img_lock.acquire(False):
             self._last_img = msg
             self._msg_header = msg.header
             self._img_lock.release()
 
     def _pcd_callback(self, msg):
-        rospy.loginfo("[detectron2_ros] Get an PCD")
+        rospy.logdebug("Get PCD")
         if self._pcd_lock.acquire(False):
             self._last_pcd = msg
             self._msg_header = msg.header
@@ -300,7 +300,7 @@ def main(argv):
     cam_index = rospy.get_param("~cam_index")
     node = Detectron2node("{:0=2}".format(cam_index))
 
-    print("===== Mask R-CNN with Detectron2 ======================")
+    rospy.loginfo("Initialize detectron2 for env_cam{:0=2}".format(cam_index))
     node.run()
 
 

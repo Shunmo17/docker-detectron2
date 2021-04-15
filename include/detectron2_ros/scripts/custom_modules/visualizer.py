@@ -316,7 +316,7 @@ class Visualizer:
 
         # too small texts are useless, therefore clamp to 9
         self._default_font_size = max(
-            np.sqrt(self.output.height * self.output.width) // 90, 10 // scale
+            np.sqrt(self.output.height * self.output.width) // 30, 10 // scale
         )
         self._instance_mode = instance_mode
 
