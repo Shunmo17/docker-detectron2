@@ -69,15 +69,17 @@ echo "------------------------------------------------"
 echo "Start to build ${IMAGE_NAME} image"
 echo "------------------------------------------------"
 if [ ${GPU} = "on" ]; then
+  TAG=${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
   docker build \
     --rm \
-    --tag ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA} \
+    --tag ${TAG} \
     --build-arg BASE_IMAGE="${IMAGE_SORCE}shunmo17/ros1.nvidia:${ROS}-cuda${CUDA}" \
     --file Dockerfile .
 else
+  TAG=${IMAGE_NAME}:${ROS}
   docker build \
     --rm \
-    --tag ${IMAGE_NAME}:${ROS} \
+    --tag ${TAG} \
     --build-arg BASE_IMAGE="${IMAGE_SORCE}shunmo17/ros1:${ROS}" \
     --file Dockerfile .
 fi
@@ -86,7 +88,7 @@ echo "Finished to build ${IMAGE_NAME} image"
 echo "------------------------------------------------"
 
 echo "================================================"
-echo " Tagged: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}"
+echo " Tagged: ${TAG}"
 echo "================================================"
 echo "UBUNTU : Ubuntu${UBUNTU}"
 echo "ROS    : ${ROS}"
