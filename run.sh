@@ -8,7 +8,7 @@ CAM_NUMBER="unspecified"
 TEST_ENABLE="false"
 
 # HSR, MANUAL, or PC
-ROS_MASTER_MODE="PC"
+ROS_MASTER_MODE="HSR"
 
 # Usage
 function usage() {
