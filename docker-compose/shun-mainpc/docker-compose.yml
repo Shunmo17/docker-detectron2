@@ -14,8 +14,8 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/include/alias.sh:/alias.sh
-            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/alias.sh:/alias.sh
+            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
@@ -36,8 +36,8 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/include/alias.sh:/alias.sh
-            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/alias.sh:/alias.sh
+            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
@@ -58,8 +58,8 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/include/alias.sh:/alias.sh
-            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/alias.sh:/alias.sh
+            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
@@ -80,8 +80,8 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/include/alias.sh:/alias.sh
-            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/alias.sh:/alias.sh
+            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
@@ -102,8 +102,8 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/include/alias.sh:/alias.sh
-            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/alias.sh:/alias.sh
+            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
@@ -124,8 +124,8 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - /etc/localtime:/etc/localtime:ro
             - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/include/alias.sh:/alias.sh
-            - ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh
+            - ${PWD}/common_files/alias.sh:/alias.sh
+            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
             - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
             - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh

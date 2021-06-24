@@ -82,8 +82,8 @@ docker run \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
     --volume /etc/localtime:/etc/localtime:ro \
     --volume ${HOME}/.Xauthority:/root/.Xauthority \
-    --volume ${PWD}/common_files/include/alias.sh:/alias.sh \
-    --volume ${PWD}/common_files/include/ros_setting.sh:/ros_setting.sh \
+    --volume ${PWD}/common_files/alias.sh:/alias.sh \
+    --volume ${PWD}/common_files/ros_setting.sh:/ros_setting.sh \
     --volume ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs \
     --volume ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros \
     --volume ${PWD}/include/startup_for_standalone.sh:/startup.sh \
