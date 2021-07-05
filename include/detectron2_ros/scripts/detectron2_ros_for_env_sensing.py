@@ -62,7 +62,7 @@ class Detectron2node(object):
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = rospy.get_param("/detectron2/parameter/detection_threshold")  # set threshold for this model
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 80
         # use custom model
-        if self._use_custom_model:
+        if self._system_mode == "real" and self._use_custom_model:
             self.cfg.MODEL.WEIGHTS = rospy.get_param("/detectron2/parameter/weight/custom")
         else:
             self.cfg.MODEL.WEIGHTS = rospy.get_param("/detectron2/parameter/weight/base")
