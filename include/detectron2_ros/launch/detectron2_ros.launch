@@ -1,8 +1,16 @@
 <launch>
   <!-- common arguments -->
-  <arg name="cam_index" />
+  <arg name="cam_index" type="string"/>
 
-  <node pkg="detectron2_ros" type="detectron2_ros_for_env_sensing.py" name="detectron2_ros_$(arg cam_index)" output="screen"><!--  output="screen" -->
-    <param name="cam_index"                       value="$(arg cam_index)" />
-  </node>
+  <group ns="env/cam$(arg cam_index)">
+    <node pkg="detectron2_ros" type="detectron2_ros_for_env_sensing.py" name="detectron2" output="screen">
+      <param name="cam_index" value="$(arg cam_index)" />
+      <remap from="input_image" to="rgb/image_raw" />
+      <remap from="input_compressed_image" to="rgb/image_raw/compressed" />
+      <remap from="input_pcd" to="depth/points" />
+      <remap from="output_result" to="maskrcnn/result" />
+      <remap from="output_visualization" to="maskrcnn/visualization" />
+
+    </node>
+  </group>
 </launch>

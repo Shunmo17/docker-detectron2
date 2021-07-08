@@ -8,7 +8,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 2
+            CAM_NUMBER: "02
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -30,7 +30,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 3
+            CAM_NUMBER: "03"
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -52,7 +52,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 6
+            CAM_NUMBER: "06"
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -74,7 +74,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 7
+            CAM_NUMBER: "07"
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -96,7 +96,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 10
+            CAM_NUMBER: "10"
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
@@ -118,7 +118,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 11
+            CAM_NUMBER: "11"
             TEST_ENABLE: "false"
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix

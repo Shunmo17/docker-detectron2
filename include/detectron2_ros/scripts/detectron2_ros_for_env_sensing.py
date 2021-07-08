@@ -41,13 +41,6 @@ class Detectron2node(object):
         self._enable_quater_pcd = rospy.get_param("/detectron2/toggle/enable_quater_pcd")
         self._system_mode = rospy.get_param("/mode", "not_specified")
 
-        # Topic name
-        self.input_image = "/env_cam" + _cam_index + "/rgb/image_raw"
-        self.input_compressed_image = "/env_cam" + _cam_index + "/rgb/image_raw/compressed"
-        self.input_pcd = "/env_cam" + _cam_index + "/depth/points"
-        self.output_visualization_topic = "/env_cam" + _cam_index + "/maskrcnn/visualization"
-        self.output_result_topic = "/env_cam" + _cam_index + "/maskrcnn/result"
-
         # # get metadata for fine tuning
         # TRAIN_DATA_NAME = "07_304_train"
         # JSON_FILE = "/catkin_ws/src/detectron2_ros/detectron2/fine_tuning/train_data/trainval.json"
@@ -97,18 +90,18 @@ class Detectron2node(object):
         self._pcd_sub = None
         self._image_sub = None
         if self._gen_image_from_pcd:
-            self._pcd_sub = rospy.Subscriber(self.input_pcd, PointCloud2, self._pcd_callback, queue_size=1)
+            self._pcd_sub = rospy.Subscriber("input_pcd", PointCloud2, self._pcd_callback, queue_size=1)
         else:
             if self._use_compressed_image:
-                self._image_sub = rospy.Subscriber(self.input_compressed_image, CompressedImage, self._image_callback, queue_size=1)
+                self._image_sub = rospy.Subscriber("input_compressed_image", CompressedImage, self._image_callback, queue_size=1)
             else:
-                self._image_sub = rospy.Subscriber(self.input_image, Image, self._image_callback, queue_size=1)
+                self._image_sub = rospy.Subscriber("input_image", Image, self._image_callback, queue_size=1)
 
         # Publisher
-        self._result_pub = rospy.Publisher(self.output_result_topic, Result, queue_size=1)
+        self._result_pub = rospy.Publisher("output_result", Result, queue_size=1)
 
         if self._visualization:
-            self._vis_pub = rospy.Publisher(self.output_visualization_topic, Image, queue_size=1)
+            self._vis_pub = rospy.Publisher("output_visualization", Image, queue_size=1)
 
     def generate_image(self, pcd):
         start_time = time.time()

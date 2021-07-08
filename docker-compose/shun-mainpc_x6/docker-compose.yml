@@ -8,7 +8,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 0
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 0
+            CAM_NUMBER: "00"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -31,7 +31,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 0
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 1
+            CAM_NUMBER: "01"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -54,7 +54,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 2
+            CAM_NUMBER: "02"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -77,7 +77,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 3
+            CAM_NUMBER: "03"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -100,7 +100,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: 4
+            CAM_NUMBER: "04"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
