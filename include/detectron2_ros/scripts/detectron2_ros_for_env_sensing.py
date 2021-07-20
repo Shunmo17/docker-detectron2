@@ -35,10 +35,10 @@ class Detectron2node(object):
         self._img_lock = threading.Lock()
         self._pcd_lock = threading.Lock()
         self._publish_rate = 100.0
-        self._gen_image_from_pcd = rospy.get_param("/detectron2/toggle/generate_image_from_pcd")
-        self._use_compressed_image = rospy.get_param("/detectron2/toggle/use_compressed_image")
-        self._use_custom_model = rospy.get_param("/detectron2/toggle/use_custom_model/" + "/env_cam" + _cam_index)
-        self._enable_quater_pcd = rospy.get_param("/detectron2/toggle/enable_quater_pcd")
+        self._gen_image_from_pcd = rospy.get_param("/detectron2/toggle/generate_image_from_pcd", False)
+        self._use_compressed_image = rospy.get_param("/detectron2/toggle/use_compressed_image", True)
+        self._use_custom_model = rospy.get_param("/detectron2/toggle/use_custom_model/" + "/env_cam" + _cam_index, False)
+        self._enable_quater_pcd = rospy.get_param("/detectron2/toggle/enable_quater_pcd", True)
         self._system_mode = rospy.get_param("/mode", "not_specified")
 
         # # get metadata for fine tuning
