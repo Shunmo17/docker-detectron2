@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 import sys
 import threading
-import copy
 import time
-
-import cv2 as cv
+import os
+import json
+import cv2
 import numpy as np
 import rospy
 import ros_numpy
 from detectron2.config import get_cfg
-from detectron2.data import MetadataCatalog
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
 # from detectron2.utils.visualizer import Visualizer
@@ -19,7 +18,6 @@ from detectron2_ros_msgs.msg import Result
 from sensor_msgs.msg import Image, CompressedImage, RegionOfInterest
 from sensor_msgs.msg import PointCloud2
 from detectron2 import model_zoo
-import os, json, cv2, random
 from detectron2.utils.visualizer import ColorMode
 from detectron2.data.datasets import register_coco_instances
 from detectron2.data import MetadataCatalog, DatasetCatalog
@@ -63,7 +61,7 @@ class Detectron2node(object):
         self._class_names = MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]).get("thing_classes", None)
         # self._class_names = self.meta_data.get("thing_classes", None)
         self._visualization = rospy.get_param("/detectron2/toggle/visualization")
-        
+
         # =================================================================================
         # Using when training
         # =================================================================================
@@ -77,8 +75,8 @@ class Detectron2node(object):
         # im = cv2.imread(IMAGE)
         # outputs = self.predictor(im)  # format is documented at https://detectron2.readthedocs.io/tutorials/models.html#model-output-format
         # v = Visualizer(im[:, :, ::-1],
-        #                 metadata=meta_data, 
-        #                 scale=0.5, 
+        #                 metadata=meta_data,
+        #                 scale=0.5,
         #                 instance_mode=ColorMode.IMAGE_BW   # remove the colors of unsegmented pixels. This option is only available for segmentation models
         # )
         # out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
@@ -191,13 +189,13 @@ class Detectron2node(object):
                                     metadata=MetadataCatalog.get(self.cfg.DATASETS.TRAIN[0]),
                                     scale=1.2,
                                     instance_mode=ColorMode.SEGMENTATION)
-                    # v = Visualizer(np_image[:, :, ::-1], 
-                    #                 metadata=self.meta_data, 
+                    # v = Visualizer(np_image[:, :, ::-1],
+                    #                 metadata=self.meta_data,
                     #                 scale=1.2,
                     #                 instance_mode=ColorMode.SEGMENTATION)
                     v = v.draw_instance_predictions(outputs["instances"].to("cpu"))
                     img = v.get_image()[:, :, ::-1]
-                    img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                     image_msg = self._bridge.cv2_to_imgmsg(img, "bgr8")
                     image_msg.header.stamp = rospy.Time.now()
                     image_msg.header.frame_id = result_msg.header.frame_id
@@ -245,8 +243,8 @@ class Detectron2node(object):
         # if use compressed image
         if self._use_compressed_image:
             np_arr = np.fromstring(image_msg.data, np.uint8)
-            imageBGR = cv.imdecode(np_arr, cv.IMREAD_COLOR)
-            imageRGB = cv.cvtColor(imageBGR, cv.COLOR_BGR2RGB)
+            imageBGR = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+            imageRGB = cv2.cvtColor(imageBGR, cv2.COLOR_BGR2RGB)
             cv_img = imageRGB
         # if use normal image
         else:
@@ -267,9 +265,9 @@ class Detectron2node(object):
                                 dtype=encoding, buffer=image_msg.data)
 
             if image_msg.encoding.lower() == 'mono8':
-                cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2GRAY)
+                cv_img = cv2.cvtColor(cv_img, cv2.COLOR_RGB2GRAY)
             else:
-                cv_img = cv.cvtColor(cv_img, cv.COLOR_RGB2BGR)
+                cv_img = cv2.cvtColor(cv_img, cv2.COLOR_RGB2BGR)
 
         return cv_img
 
