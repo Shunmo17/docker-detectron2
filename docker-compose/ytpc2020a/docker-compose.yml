@@ -1,6 +1,6 @@
 version: "2.3"
 services:
-    detectron2_env_cam00:
+    detectron2_env_cam06:
         stdin_open: "true"
         network_mode: host
         runtime: nvidia
@@ -8,7 +8,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 0
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: "00"
+            CAM_NUMBER: "06"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -23,7 +23,7 @@ services:
         image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
-    detectron2_env_cam01:
+    detectron2_env_cam07:
         stdin_open: "true"
         network_mode: host
         runtime: nvidia
@@ -31,7 +31,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 0
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: "01"
+            CAM_NUMBER: "07"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -46,7 +46,7 @@ services:
         image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
-    detectron2_env_cam02:
+    detectron2_env_cam08:
         stdin_open: "true"
         network_mode: host
         runtime: nvidia
@@ -54,7 +54,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: "02"
+            CAM_NUMBER: "08"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -69,7 +69,7 @@ services:
         image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
 
-    detectron2_env_cam03:
+    detectron2_env_cam09:
         stdin_open: "true"
         network_mode: host
         runtime: nvidia
@@ -77,7 +77,7 @@ services:
             NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
-            CAM_NUMBER: "03"
+            CAM_NUMBER: "09"
             TEST_ENABLE: "false"
             ROS_MASTER_MODE: ${ROS_MASTER_MODE}
         volumes:
@@ -91,49 +91,141 @@ services:
             - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
         image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
         command: /startup_for_docker.sh
+        
+    # detectron2_env_cam00:
+    #     stdin_open: "true"
+    #     network_mode: host
+    #     runtime: nvidia
+    #     environment:
+    #         NVIDIA_VISIBLE_DEVICES: 0
+    #         NVIDIA_DRIVER_CAPABILITIES: all
+    #         DISPLAY: ${DISPLAY}
+    #         CAM_NUMBER: "00"
+    #         TEST_ENABLE: "false"
+    #         ROS_MASTER_MODE: ${ROS_MASTER_MODE}
+    #     volumes:
+    #         - /tmp/.X11-unix:/tmp/.X11-unix
+    #         - /etc/localtime:/etc/localtime:ro
+    #         - ${HOME}/.Xauthority:/root/.Xauthority
+    #         - ${PWD}/common_files/alias.sh:/alias.sh
+    #         - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
+    #         - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+    #         - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+    #         - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+    #     image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
+    #     command: /startup_for_docker.sh
 
-    detectron2_env_cam04:
-        stdin_open: "true"
-        network_mode: host
-        runtime: nvidia
-        environment:
-            NVIDIA_VISIBLE_DEVICES: 2
-            NVIDIA_DRIVER_CAPABILITIES: all
-            DISPLAY: ${DISPLAY}
-            CAM_NUMBER: "04"
-            TEST_ENABLE: "false"
-            ROS_MASTER_MODE: ${ROS_MASTER_MODE}
-        volumes:
-            - /tmp/.X11-unix:/tmp/.X11-unix
-            - /etc/localtime:/etc/localtime:ro
-            - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/alias.sh:/alias.sh
-            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
-            - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
-            - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
-            - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
-        command: /startup_for_docker.sh
+    # detectron2_env_cam01:
+    #     stdin_open: "true"
+    #     network_mode: host
+    #     runtime: nvidia
+    #     environment:
+    #         NVIDIA_VISIBLE_DEVICES: 0
+    #         NVIDIA_DRIVER_CAPABILITIES: all
+    #         DISPLAY: ${DISPLAY}
+    #         CAM_NUMBER: "01"
+    #         TEST_ENABLE: "false"
+    #         ROS_MASTER_MODE: ${ROS_MASTER_MODE}
+    #     volumes:
+    #         - /tmp/.X11-unix:/tmp/.X11-unix
+    #         - /etc/localtime:/etc/localtime:ro
+    #         - ${HOME}/.Xauthority:/root/.Xauthority
+    #         - ${PWD}/common_files/alias.sh:/alias.sh
+    #         - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
+    #         - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+    #         - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+    #         - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+    #     image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
+    #     command: /startup_for_docker.sh
 
-    detectron2_env_cam05:
-        stdin_open: "true"
-        network_mode: host
-        runtime: nvidia
-        environment:
-            NVIDIA_VISIBLE_DEVICES: 2
-            NVIDIA_DRIVER_CAPABILITIES: all
-            DISPLAY: ${DISPLAY}
-            CAM_NUMBER: "05"
-            TEST_ENABLE: "false"
-            ROS_MASTER_MODE: ${ROS_MASTER_MODE}
-        volumes:
-            - /tmp/.X11-unix:/tmp/.X11-unix
-            - /etc/localtime:/etc/localtime:ro
-            - ${HOME}/.Xauthority:/root/.Xauthority
-            - ${PWD}/common_files/alias.sh:/alias.sh
-            - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
-            - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
-            - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
-            - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
-        image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
-        command: /startup_for_docker.sh
+    # detectron2_env_cam02:
+    #     stdin_open: "true"
+    #     network_mode: host
+    #     runtime: nvidia
+    #     environment:
+    #         NVIDIA_VISIBLE_DEVICES: 1
+    #         NVIDIA_DRIVER_CAPABILITIES: all
+    #         DISPLAY: ${DISPLAY}
+    #         CAM_NUMBER: "02"
+    #         TEST_ENABLE: "false"
+    #         ROS_MASTER_MODE: ${ROS_MASTER_MODE}
+    #     volumes:
+    #         - /tmp/.X11-unix:/tmp/.X11-unix
+    #         - /etc/localtime:/etc/localtime:ro
+    #         - ${HOME}/.Xauthority:/root/.Xauthority
+    #         - ${PWD}/common_files/alias.sh:/alias.sh
+    #         - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
+    #         - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+    #         - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+    #         - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+    #     image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
+    #     command: /startup_for_docker.sh
+
+    # detectron2_env_cam03:
+    #     stdin_open: "true"
+    #     network_mode: host
+    #     runtime: nvidia
+    #     environment:
+    #         NVIDIA_VISIBLE_DEVICES: 1
+    #         NVIDIA_DRIVER_CAPABILITIES: all
+    #         DISPLAY: ${DISPLAY}
+    #         CAM_NUMBER: "03"
+    #         TEST_ENABLE: "false"
+    #         ROS_MASTER_MODE: ${ROS_MASTER_MODE}
+    #     volumes:
+    #         - /tmp/.X11-unix:/tmp/.X11-unix
+    #         - /etc/localtime:/etc/localtime:ro
+    #         - ${HOME}/.Xauthority:/root/.Xauthority
+    #         - ${PWD}/common_files/alias.sh:/alias.sh
+    #         - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
+    #         - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+    #         - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+    #         - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+    #     image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
+    #     command: /startup_for_docker.sh
+
+    # detectron2_env_cam04:
+    #     stdin_open: "true"
+    #     network_mode: host
+    #     runtime: nvidia
+    #     environment:
+    #         NVIDIA_VISIBLE_DEVICES: 2
+    #         NVIDIA_DRIVER_CAPABILITIES: all
+    #         DISPLAY: ${DISPLAY}
+    #         CAM_NUMBER: "04"
+    #         TEST_ENABLE: "false"
+    #         ROS_MASTER_MODE: ${ROS_MASTER_MODE}
+    #     volumes:
+    #         - /tmp/.X11-unix:/tmp/.X11-unix
+    #         - /etc/localtime:/etc/localtime:ro
+    #         - ${HOME}/.Xauthority:/root/.Xauthority
+    #         - ${PWD}/common_files/alias.sh:/alias.sh
+    #         - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
+    #         - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+    #         - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+    #         - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+    #     image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
+    #     command: /startup_for_docker.sh
+
+    # detectron2_env_cam05:
+    #     stdin_open: "true"
+    #     network_mode: host
+    #     runtime: nvidia
+    #     environment:
+    #         NVIDIA_VISIBLE_DEVICES: 2
+    #         NVIDIA_DRIVER_CAPABILITIES: all
+    #         DISPLAY: ${DISPLAY}
+    #         CAM_NUMBER: "05"
+    #         TEST_ENABLE: "false"
+    #         ROS_MASTER_MODE: ${ROS_MASTER_MODE}
+    #     volumes:
+    #         - /tmp/.X11-unix:/tmp/.X11-unix
+    #         - /etc/localtime:/etc/localtime:ro
+    #         - ${HOME}/.Xauthority:/root/.Xauthority
+    #         - ${PWD}/common_files/alias.sh:/alias.sh
+    #         - ${PWD}/common_files/ros_setting.sh:/ros_setting.sh
+    #         - ${PWD}/../../ros_packages/ytlab_environment/detectron2_ros_msgs:/catkin_ws/src/detectron2_ros_msgs
+    #         - ${PWD}/include/detectron2_ros:/catkin_ws/src/detectron2_ros
+    #         - ${PWD}/include/startup_for_docker-compose.sh:/startup_for_docker.sh
+    #     image: ${IMAGE_NAME}.nvidia:${ROS}-cuda${CUDA}
+    #     command: /startup_for_docker.sh
