@@ -22,23 +22,23 @@ fi
 
 # @07-304
 if [ ${HOSTNAME} = "ytpc2020a" ]; then
-    echo "=================================="
-    echo "|  GPU   | 0 | 0 | 1 | 1 | 2 | 2 |"
-    echo "| Camera | 0 | 1 | 2 | 3 | 4 | 5 |"
-    echo "=================================="
+    echo "======================"
+    echo "|  GPU   | 0 | 0 | 1 |"
+    echo "| Camera | 0 | 1 | 5 |"
+    echo "======================"
     docker-compose -f ./docker-compose/ytpc2020a/docker-compose.yml up
 fi
 if [ ${HOSTNAME} = "printeps2017a" ]; then
-    echo "=================================="
-    echo "|  GPU   | 0 | 0 | 1 | 1 | 2 | 2 |"
-    echo "| Camera | 0 | 1 | 2 | 3 | 4 | 5 |"
-    echo "=================================="
+    echo "=========================="
+    echo "|  GPU   | 0 | 1 | 1 | 2 |"
+    echo "| Camera | 2 | 3 | 4 | 6 |"
+    echo "=========================="
     docker-compose -f ./docker-compose/printeps2017a/docker-compose.yml up
 fi
-if [ ${HOSTNAME} = "dlbox" ]; then
-    echo "===================================="
-    echo "|  GPU   | 0 | 0 | 1 | 1 | 2  | 2  |"
-    echo "| Camera | 6 | 7 | 8 | 9 | 10 | 11 |"
-    echo "===================================="
-    docker-compose -f ./docker-compose/dlbox/docker-compose.yml up
+if [ ${HOSTNAME} = "printeps2017b" ]; then
+    echo "================================"
+    echo "|  GPU   | 0 | 0 | 1 | 2  | 2  |"
+    echo "| Camera | 7 | 8 | 9 | 10 | 11 |"
+    echo "================================"
+    docker-compose -f ./docker-compose/printeps2017b/docker-compose.yml up
 fi
