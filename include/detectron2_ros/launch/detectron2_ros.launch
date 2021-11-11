@@ -1,6 +1,6 @@
 <launch>
   <!-- common arguments -->
-  <arg name="cam_index" type="string"/>
+  <arg name="cam_index" />
 
   <group ns="env/cam$(arg cam_index)">
     <node pkg="detectron2_ros" type="detectron2_ros_for_env_sensing.py" name="detectron2" output="screen">
