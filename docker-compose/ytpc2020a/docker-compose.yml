@@ -28,7 +28,7 @@ services:
         network_mode: host
         runtime: nvidia
         environment:
-            NVIDIA_VISIBLE_DEVICES: 0
+            NVIDIA_VISIBLE_DEVICES: 1
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: "01"
@@ -51,7 +51,7 @@ services:
         network_mode: host
         runtime: nvidia
         environment:
-            NVIDIA_VISIBLE_DEVICES: 1
+            NVIDIA_VISIBLE_DEVICES: 2
             NVIDIA_DRIVER_CAPABILITIES: all
             DISPLAY: ${DISPLAY}
             CAM_NUMBER: "05"
